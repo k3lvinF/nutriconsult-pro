@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriConsult Pro — Sistema Online</title>
+
+<!-- Google Fonts — carrega online normalmente -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+/* ════════════════════════════════════════
+   DESIGN SYSTEM — Verde + Branco Limpo
+   Tipografia: Inter (corpo) + Lato (títulos)
+   Estilo: Clínico, Minimalista, Profissional
+════════════════════════════════════════ */
+:root {
+  /* Verdes */
+  --v900: #052410;
+  --v800: #0A3D1F;
+  --v700: #0F5229;
+  --v600: #166534;
+  --v500: #1D8348;
+  --v400: #27AE60;
+  --v300: #52BE80;
+  --v200: #A9DFBF;
+  --v100: #D5F5E3;
+  --v50:  #EAFAF1;
+
+  /* Dourado/âmbar */
+  --a700: #7D6608;
+  --a500: #B7950B;
+  --a300: #F4D03F;
+  --a100: #FEF9E7;
+
+  /* Neutros */
+  --n900: #0D0D0D;
+  --n800: #1A1A1A;
+  --n700: #2D2D2D;
+  --n600: #404040;
+  --n500: #595959;
+  --n400: #808080;
+  --n300: #A6A6A6;
+  --n200: #D4D4D4;
+  --n100: #E8E8E8;
+  --n50:  #F5F5F5;
+  --n0:   #FFFFFF;
+
+  /* Semânticas */
+  --red:    #C0392B;
+  --red-l:  #FDEDEC;
+  --amber:  #E67E22;
+  --amb-l:  #FEF5E7;
+  --blue:   #2471A3;
+  --blue-l: #EBF5FB;
+
+  /* Layout */
+  --sidebar-w: 256px;
+  --topbar-h:  60px;
+
+  /* Sombras */
+  --sh-xs: 0 1px 3px rgba(0,0,0,.08);
+  --sh-sm: 0 2px 8px rgba(0,0,0,.08);
+  --sh-md: 0 4px 16px rgba(0,0,0,.10);
+  --sh-lg: 0 8px 32px rgba(0,0,0,.12);
+  --sh-xl: 0 16px 64px rgba(0,0,0,.14);
+
+  /* Tipografia */
+  --font-body:  'Inter', system-ui, -apple-system, sans-serif;
+  --font-title: 'Lato', 'Inter', sans-serif;
+  --font-mono:  'JetBrains Mono', 'Courier New', monospace;
+
+  /* Bordas */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --border: #E8E8E8;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-body);
+  background: var(--n50);
+  color: var(--n800);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+button { font-family: var(--font-body); cursor: pointer; }
+input, select, textarea { font-family: var(--font-body); }
+a { text-decoration: none; color: inherit; }
+
+/* ════════════════════════════════════════
+   TELA DE LOGIN / ONBOARDING
+════════════════════════════════════════ */
+#screen-auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Painel esquerdo — visual */
+.auth-left {
+  background: var(--v800);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-left::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(39,174,96,.15) 0%, transparent 70%);
+}
+.auth-left::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(183,149,11,.12) 0%, transparent 70%);
+}
+.al-logo {
+  display: flex; align-items: center; gap: 12px;
+  position: relative; z-index: 1;
+}
+.al-mark {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--v500), var(--v300));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 16px rgba(39,174,96,.4);
+}
+.al-name {
+  font-family: var(--font-title);
+  font-size: 18px; font-weight: 900; color: #fff;
+  letter-spacing: -.3px;
+}
+.al-tag {
+  font-size: 11px; color: rgba(255,255,255,.4);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-top: 1px;
+}
+.al-hero { position: relative; z-index: 1; }
+.al-pre {
+  font-size: 11px; color: var(--v300);
+  letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.al-pre::before { content: ''; width: 20px; height: 1px; background: var(--v300); }
+.al-title {
+  font-family: var(--font-title);
+  font-size: 42px; font-weight: 900; color: #fff;
+  line-height: 1.1; letter-spacing: -.5px;
+  margin-bottom: 16px;
+}
+.al-title em { color: var(--v300); font-style: normal; }
+.al-desc {
+  font-size: 15px; color: rgba(255,255,255,.5);
+  line-height: 1.7; max-width: 400px;
+}
+.al-features {
+  display: flex; flex-direction: column; gap: 12px;
+  position: relative; z-index: 1;
+}
+.al-feature {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--radius-md);
+  transition: background .15s;
+}
+.al-feature:hover { background: rgba(255,255,255,.08); }
+.af-ico {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: rgba(39,174,96,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.af-name { font-size: 13px; font-weight: 600; color: #fff; }
+.af-desc { font-size: 11px; color: rgba(255,255,255,.38); margin-top: 1px; }
+
+/* Painel direito — formulário */
+.auth-right {
+  background: var(--n0);
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px;
+  overflow-y: auto;
+}
+.auth-card {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; gap: 0;
+}
+
+/* Steps do auth */
+.auth-step { display: none; }
+.auth-step.active { display: flex; flex-direction: column; gap: 0; }
+
+.auth-step-label {
+  font-size: 11px; color: var(--v500);
+  font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.auth-title {
+  font-family: var(--font-title);
+  font-size: 28px; font-weight: 900; color: var(--n900);
+  letter-spacing: -.3px; margin-bottom: 6px;
+}
+.auth-sub {
+  font-size: 14px; color: var(--n400);
+  line-height: 1.6; margin-bottom: 28px;
+}
+
+/* Perfis */
+.profiles-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+.profile-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all .18s;
+  background: var(--n0);
+}
+.profile-opt:hover { border-color: var(--v400); background: var(--v50); transform: translateX(3px); }
+.profile-opt.selected { border-color: var(--v500); background: var(--v50); box-shadow: 0 0 0 3px rgba(29,131,72,.1); }
+.po-av {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; font-weight: 800; color: #fff;
+}
+.po-info { flex: 1; }
+.po-name { font-size: 13px; font-weight: 700; color: var(--n800); }
+.po-role { font-size: 11px; color: var(--n400); margin-top: 1px; }
+.po-badges { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+.po-badge {
+  font-size: 9px; font-weight: 700; padding: 2px 6px;
+  border-radius: 4px; letter-spacing: .3px;
+}
+.pb-full   { background: var(--v100); color: var(--v700); }
+.pb-tech   { background: var(--blue-l); color: var(--blue); }
+.pb-ops    { background: var(--amb-l); color: #8A5E00; }
+.pb-read   { background: var(--n100); color: var(--n500); }
+.po-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--n200);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s;
+  font-size: 10px;
+}
+.profile-opt.selected .po-radio { background: var(--v500); border-color: var(--v500); color: #fff; }
+
+/* Formulário */
+.form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+.form-label {
+  font-size: 12px; font-weight: 600; color: var(--n600);
+  text-transform: uppercase; letter-spacing: .6px;
+}
+.form-input, .form-select {
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px; color: var(--n900);
+  background: var(--n0); outline: none;
+  transition: all .15s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--v400);
+  box-shadow: 0 0 0 3px rgba(39,174,96,.1);
+}
+.form-input::placeholder { color: var(--n300); }
+.form-select { appearance: none; cursor: pointer; }
+
+.pass-wrap { position: relative; }
+.pass-wrap .form-input { padding-right: 42px; }
+.pass-toggle {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--n300); font-size: 15px;
+  cursor: pointer; transition: color .12s; padding: 4px;
+}
+.pass-toggle:hover { color: var(--n700); }
+
+.form-hint { font-size: 11px; color: var(--n400); margin-top: 3px; }
+.form-error { font-size: 11px; color: var(--red); margin-top: 3px; display: none; font-weight: 500; }
+.form-error.show { display: block; }
+.form-input.err { border-color: var(--red); animation: shake .35s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+/* Botões */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px 20px; border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  transition: all .15s; font-family: var(--font-body);
+  white-space: nowrap;
+}
+.btn-full { width: 100%; padding: 13px; font-size: 14px; }
+.btn-primary {
+  background: var(--v600); color: #fff;
+  box-shadow: 0 2px 8px rgba(22,101,52,.3);
+}
+.btn-primary:hover { background: var(--v700); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22,101,52,.35); }
+.btn-primary:disabled { background: var(--n200); color: var(--n400); box-shadow: none; transform: none; cursor: not-allowed; }
+.btn-outline { background: var(--n0); color: var(--v600); border: 1.5px solid var(--v300); }
+.btn-outline:hover { background: var(--v50); }
+.btn-ghost  { background: var(--n50); color: var(--n600); }
+.btn-ghost:hover { background: var(--n100); }
+.btn-danger { background: var(--red-l); color: var(--red); border: 1px solid #F5C6C2; }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn-sm { padding: 6px 13px; font-size: 12px; border-radius: var(--radius-sm); }
+.btn-xs { padding: 4px 10px; font-size: 11px; border-radius: 5px; }
+
+/* Loading spinner */
+.spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Divider */
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--n300); font-size: 12px; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Badge de perfil selecionado */
+.selected-profile-badge {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; margin-bottom: 22px;
+  background: var(--v50); border: 1px solid var(--v200);
+  border-radius: var(--radius-md);
+}
+.spb-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #fff; }
+.spb-name { font-size: 13px; font-weight: 700; color: var(--v700); }
+.spb-role { font-size: 11px; color: var(--v500); margin-top: 1px; }
+.spb-change { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--v500); background: none; border: none; cursor: pointer; }
+.spb-change:hover { color: var(--v700); text-decoration: underline; }
+
+/* Demo box */
+.demo-box {
+  margin-top: 20px; padding: 12px 14px;
+  background: var(--n50); border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+}
+.demo-box-title { font-size: 10px; font-weight: 700; color: var(--n400); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.demo-cred { font-size: 12px; color: var(--n500); font-family: var(--font-mono); display: flex; flex-direction: column; gap: 3px; }
+.demo-fill { margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--v500); cursor: pointer; background: none; border: none; padding: 0; }
+.demo-fill:hover { color: var(--v700); text-decoration: underline; }
+
+/* Tela de sucesso */
+.success-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--v100); border: 3px solid var(--v200);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; margin: 0 auto 18px;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+/* ════════════════════════════════════════
+   LAYOUT PRINCIPAL — APP
+════════════════════════════════════════ */
+#screen-app { display: none; min-height: 100vh; }
+#screen-app.active { display: flex; }
+
+/* ── SIDEBAR (Espaço lateral) ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--v800);
+  display: flex; flex-direction: column;
+  position: fixed; inset: 0 auto 0 0;
+  z-index: 100;
+  transition: transform .3s ease;
+}
+.sidebar::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 1px; height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(39,174,96,.2) 40%, rgba(39,174,96,.2) 60%, transparent);
+}
+
+/* Logo */
+.sb-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-mark {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--v500), var(--v300));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(39,174,96,.35);
+}
+.sb-name { font-family: var(--font-title); font-size: 13px; font-weight: 900; color: #fff; letter-spacing: -.1px; }
+.sb-ver  { font-size: 9px; color: rgba(255,255,255,.28); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 1px; }
+
+/* UAN selector */
+.sb-uan {
+  margin: 12px 14px;
+  padding: 9px 12px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background .15s;
+}
+.sb-uan:hover { background: rgba(255,255,255,.08); }
+.sb-uan-lbl { font-size: 9px; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: 1.2px; }
+.sb-uan-name {
+  font-size: 12px; color: #fff; font-weight: 600; margin-top: 2px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sb-uan-arrow { font-size: 10px; color: rgba(255,255,255,.3); }
+
+/* Nav */
+.sb-nav { flex: 1; padding: 4px 0; overflow-y: auto; }
+.sb-nav::-webkit-scrollbar { width: 3px; }
+.sb-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+.sb-section {
+  padding: 14px 16px 4px;
+  font-size: 9px; color: rgba(255,255,255,.22);
+  text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 16px;
+  color: rgba(255,255,255,.48);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+  margin-right: 10px; margin-bottom: 1px;
+  transition: all .15s;
+  position: relative;
+  user-select: none;
+}
+.sb-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
+.sb-item.active {
+  background: rgba(39,174,96,.18);
+  color: #fff; font-weight: 600;
+}
+.sb-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 18%; bottom: 18%;
+  width: 3px; background: var(--v300);
+  border-radius: 0 2px 2px 0;
+}
+.sb-ico { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+.sb-badge {
+  margin-left: auto;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  font-family: var(--font-mono);
+}
+.sb-badge-red { background: var(--red); color: #fff; }
+.sb-badge-amb { background: var(--amber); color: #fff; }
+.sb-badge-grn { background: var(--v400); color: #fff; }
+
+/* User footer */
+.sb-foot {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sb-user { display: flex; align-items: center; gap: 9px; }
+.sb-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--v600), var(--v400));
+  border: 1.5px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+.sb-user-name { font-size: 12px; color: #fff; font-weight: 600; }
+.sb-user-role { font-size: 10px; color: rgba(255,255,255,.38); margin-top: 1px; }
+.sb-settings {
+  margin-left: auto; width: 26px; height: 26px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 7px; color: rgba(255,255,255,.4); font-size: 13px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.sb-settings:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--n0);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--sh-xs);
+}
+.tb-left { display: flex; flex-direction: column; }
+.tb-title { font-family: var(--font-title); font-size: 16px; font-weight: 900; color: var(--n900); letter-spacing: -.2px; }
+.tb-sub   { font-size: 11px; color: var(--n400); margin-top: 1px; }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+
+/* Notif bell */
+.notif-bell {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: var(--n50); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; position: relative; transition: all .15s;
+}
+.notif-bell:hover { background: var(--n100); }
+.notif-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); border: 2px solid var(--n0);
+}
+
+/* ── PÁGINAS ── */
+.page { display: none; }
+.page.active { display: block; }
+.page-content { padding: 22px 24px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--n0);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+}
+.card-head {
+  padding: 14px 18px 12px;
+  background: var(--n50);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title {
+  font-size: 13px; font-weight: 700; color: var(--n800);
+  display: flex; align-items: center; gap: 7px;
+}
+.card-body { padding: 18px; }
+
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: var(--n0); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); box-shadow: var(--sh-sm);
+  padding: 18px; transition: all .2s;
+}
+.kpi-card:hover { transform: translateY(-2px); box-shadow: var(--sh-md); }
+.kpi-icon { font-size: 20px; margin-bottom: 10px; }
+.kpi-value {
+  font-family: var(--font-title);
+  font-size: 30px; font-weight: 900; line-height: 1;
+  margin-bottom: 4px;
+}
+.kpi-label { font-size: 12px; color: var(--n400); margin-bottom: 8px; }
+.kpi-trend { font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 3px; }
+.kpi-green .kpi-value { color: var(--v600); }
+.kpi-amber .kpi-value { color: #92610A; }
+.kpi-red   .kpi-value { color: var(--red); }
+.kpi-blue  .kpi-value { color: var(--blue); }
+.trend-up   { color: var(--v400); }
+.trend-down { color: var(--red); }
+.trend-flat { color: var(--n400); }
+
+/* ── GRIDS ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.g2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ── PILLS / BADGES ── */
+.pill { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 3px; }
+.pill-g { background: var(--v100); color: var(--v700); }
+.pill-r { background: var(--red-l); color: var(--red); }
+.pill-a { background: var(--amb-l); color: #7D4E08; }
+.pill-n { background: var(--n100); color: var(--n500); }
+.pill-b { background: var(--blue-l); color: var(--blue); }
+
+/* ── BARRAS DE PROGRESSO ── */
+.bar-list { display: flex; flex-direction: column; gap: 13px; }
+.bar-item { display: flex; flex-direction: column; gap: 5px; }
+.bar-meta { display: flex; justify-content: space-between; align-items: baseline; }
+.bar-label { font-size: 12px; color: var(--n600); font-weight: 500; }
+.bar-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.bar-track { height: 7px; background: var(--n100); border-radius: 4px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 4px; transition: width .8s ease; }
+.bf-g { background: linear-gradient(90deg, var(--v600), var(--v400)); }
+.bf-a { background: linear-gradient(90deg, #92610A, var(--amber)); }
+.bf-r { background: linear-gradient(90deg, var(--red), #E74C3C); }
+
+/* ── ALERTAS ── */
+.alert-strip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px; border-radius: var(--radius-md);
+  margin-bottom: 8px; font-size: 13px;
+}
+.as-crit { background: var(--red-l); border-left: 3px solid var(--red); }
+.as-warn { background: var(--amb-l); border-left: 3px solid var(--amber); }
+.as-info { background: var(--v50); border-left: 3px solid var(--v400); }
+.as-ico  { font-size: 16px; flex-shrink: 0; }
+.as-txt  { flex: 1; }
+.as-txt strong { font-weight: 700; color: var(--n800); display: block; margin-bottom: 1px; }
+.as-txt p { font-size: 11px; color: var(--n500); }
+.as-time { font-family: var(--font-mono); font-size: 10px; color: var(--n400); white-space: nowrap; }
+.as-link { font-size: 11px; font-weight: 700; color: var(--v600); cursor: pointer; white-space: nowrap; }
+.as-link:hover { text-decoration: underline; }
+
+/* ── TABS ── */
+.tabs-bar {
+  display: flex; gap: 3px;
+  background: var(--n0); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 4px;
+  margin-bottom: 18px; box-shadow: var(--sh-xs);
+}
+.tab-btn {
+  flex: 1; padding: 8px 12px; border-radius: 7px; border: none;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+  background: transparent; color: var(--n400); font-family: var(--font-body);
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.tab-btn:hover { background: var(--n50); color: var(--n700); }
+.tab-btn.active { background: var(--n800); color: #fff; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── MODAIS ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(13,13,13,.55); z-index: 500;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--n0); border-radius: var(--radius-xl);
+  width: 90%; max-width: 600px; max-height: 90vh;
+  overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: var(--sh-xl);
+  animation: modalIn .22s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-head {
+  padding: 18px 22px; background: var(--v800);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-head h2 { font-family: var(--font-title); font-size: 15px; font-weight: 900; color: #fff; }
+.modal-head p  { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 3px; }
+.modal-close {
+  width: 28px; height: 28px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.12); color: #fff; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .12s;
+}
+.modal-close:hover { background: rgba(255,255,255,.22); }
+.modal-body { padding: 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.modal-foot {
+  padding: 14px 22px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+  background: var(--n50);
+}
+
+/* ── FORM FIELDS ── */
+.fld { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.fld:last-child { margin-bottom: 0; }
+.fld-lbl { font-size: 11px; font-weight: 700; color: var(--n500); text-transform: uppercase; letter-spacing: .7px; }
+.fld-lbl .req { color: var(--red); margin-left: 2px; }
+.fld-inp, .fld-sel, .fld-area {
+  padding: 9px 12px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-md); font-size: 13px;
+  color: var(--n900); background: var(--n0); outline: none;
+  transition: all .14s; width: 100%; font-family: var(--font-body);
+}
+.fld-inp:focus, .fld-sel:focus, .fld-area:focus {
+  border-color: var(--v400); box-shadow: 0 0 0 3px rgba(39,174,96,.1);
+}
+.fld-area { resize: vertical; min-height: 72px; line-height: 1.6; }
+.fld-sel { appearance: none; cursor: pointer; }
+.fld-r2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fld-r3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── TOGGLE ── */
+.toggle {
+  width: 42px; height: 22px; border-radius: 11px;
+  background: var(--n200); position: relative;
+  cursor: pointer; transition: background .18s; border: none; flex-shrink: 0;
+}
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: transform .18s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.toggle.on { background: var(--v500); }
+.toggle.on::after { transform: translateX(20px); }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px; border-radius: var(--radius-md);
+  background: var(--n50); border: 1px solid var(--border); margin-bottom: 8px;
+}
+.toggle-row:last-child { margin-bottom: 0; }
+.tr-name { font-size: 13px; font-weight: 600; color: var(--n800); }
+.tr-desc { font-size: 11px; color: var(--n400); margin-top: 1px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  background: var(--n900); color: #fff;
+  padding: 12px 20px; border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--sh-xl);
+  display: flex; align-items: center; gap: 9px;
+  transform: translateY(70px); opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  max-width: 380px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── ANIMAÇÕES ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.page.active .kpi-card:nth-child(1){animation:fadeUp .4s ease .04s both}
+.page.active .kpi-card:nth-child(2){animation:fadeUp .4s ease .08s both}
+.page.active .kpi-card:nth-child(3){animation:fadeUp .4s ease .12s both}
+.page.active .kpi-card:nth-child(4){animation:fadeUp .4s ease .16s both}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 900px) {
+  .auth-left { display: none; }
+  #screen-auth { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .g2, .g2-1, .g3 { grid-template-columns: 1fr; }
+}
+
+/* ── PRINT ── */
+@media print {
+  .sidebar, .topbar, .tabs-bar, .modal-overlay, .toast { display: none !important; }
+  .main-content { margin-left: 0 !important; }
+  .page-content { padding: 0 !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     TELA DE AUTENTICAÇÃO
+════════════════════════════════════════ -->
+<div id="screen-auth">
+
+  <!-- Esquerda -->
+  <div class="auth-left">
+    <div class="al-logo">
+      <div class="al-mark">🥗</div>
+      <div>
+        <div class="al-name">NutriConsult Pro</div>
+        <div class="al-tag">Gestão de UANs · v2.0</div>
+      </div>
+    </div>
+
+    <div class="al-hero">
+      <div class="al-pre">Sistema de Gestão Sanitária</div>
+      <h1 class="al-title">Alimentação<br>segura começa<br>com <em>controle</em>.</h1>
+      <p class="al-desc">Gerencie sua consultoria, documentação regulatória RDC 216, fichas técnicas com TACO e relatórios quinzenais — tudo em um único sistema online.</p>
+    </div>
+
+    <div class="al-features">
+      <div class="al-feature">
+        <div class="af-ico">📄</div>
+        <div>
+          <div class="af-name">POPs & MBP automáticos</div>
+          <div class="af-desc">8 POPs completos baseados na RDC 216/2004</div>
+        </div>
+      </div>
+      <div class="al-feature">
+        <div class="af-ico">🌿</div>
+        <div>
+          <div class="af-name">Tabela TACO integrada</div>
+          <div class="af-desc">Custo e valor nutricional calculados automaticamente</div>
+        </div>
+      </div>
+      <div class="al-feature">
+        <div class="af-ico">📊</div>
+        <div>
+          <div class="af-name">Relatórios para apresentação</div>
+          <div class="af-desc">Slides profissionais gerados a partir dos seus dados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Direita -->
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <!-- STEP 1: Escolha de perfil -->
+      <div class="auth-step active" id="step-perfil">
+        <div class="auth-step-label">Passo 1 de 3</div>
+        <h2 class="auth-title">Quem está<br>acessando?</h2>
+        <p class="auth-sub">Selecione seu perfil para personalizar sua experiência no sistema.</p>
+
+        <div class="profiles-list" id="profiles-list">
+          <!-- Gerado por JS -->
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-next-perfil" onclick="irParaLogin()" disabled>
+          Continuar →
+        </button>
+
+        <div class="divider">ou</div>
+
+        <button class="btn btn-outline btn-full" onclick="irParaCadastro()">
+          Criar nova conta de consultor
+        </button>
+
+        <div style="margin-top:16px;text-align:center;font-size:11px;color:var(--n400)">
+          🔒 Sistema online seguro · Dados protegidos
+        </div>
+      </div>
+
+      <!-- STEP 2: Login -->
+      <div class="auth-step" id="step-login">
+        <div class="auth-step-label">Passo 2 de 3</div>
+        <h2 class="auth-title">Bem-vindo<br>de volta</h2>
+        <p class="auth-sub">Entre com suas credenciais para acessar o sistema.</p>
+
+        <div class="selected-profile-badge" id="selected-badge">
+          <div class="spb-av" id="badge-av"></div>
+          <div>
+            <div class="spb-name" id="badge-name">—</div>
+            <div class="spb-role" id="badge-role">—</div>
+          </div>
+          <button class="spb-change" onclick="voltarPerfil()">Trocar</button>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" id="input-email" type="email" placeholder="seu@email.com" autocomplete="email">
+          <div class="form-error" id="err-email">E-mail não encontrado.</div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Senha</label>
+          <div class="pass-wrap">
+            <input class="form-input" id="input-senha" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+            <button class="pass-toggle" onclick="toggleSenha()" id="btn-eye">👁</button>
+          </div>
+          <div class="form-error" id="err-senha">Senha incorreta.</div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--n500);cursor:pointer">
+            <input type="checkbox" id="lembrar" style="accent-color:var(--v500);width:14px;height:14px"> Lembrar acesso
+          </label>
+          <button style="background:none;border:none;font-size:12px;font-weight:600;color:var(--v600);cursor:pointer" onclick="showToast('📧 Verifique seu e-mail para redefinir a senha.')">Esqueci a senha</button>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-login" onclick="fazerLogin()">
+          <span id="login-txt">Entrar no sistema</span>
+          <div class="spinner" id="login-spin" style="display:none"></div>
+        </button>
+
+        <div class="demo-box">
+          <div class="demo-box-title">🧪 Credenciais de demonstração</div>
+          <div class="demo-cred" id="demo-cred-text"></div>
+          <button class="demo-fill" onclick="preencherDemo()">→ Preencher automaticamente</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Cadastro -->
+      <div class="auth-step" id="step-cadastro">
+        <div class="auth-step-label">Criar conta</div>
+        <h2 class="auth-title">Novo consultor</h2>
+        <p class="auth-sub">Crie sua conta e comece a gerenciar suas UANs agora.</p>
+
+        <div class="fld-r2" style="margin-bottom:14px">
+          <div class="fld"><label class="fld-lbl">Nome <span class="req">*</span></label><input class="fld-inp" id="cad-nome" placeholder="Seu nome"></div>
+          <div class="fld"><label class="fld-lbl">CRN <span class="req">*</span></label><input class="fld-inp" id="cad-crn" placeholder="CRN-X 00000"></div>
+        </div>
+        <div class="fld"><label class="fld-lbl">E-mail <span class="req">*</span></label><input class="fld-inp" id="cad-email" type="email" placeholder="seu@email.com"></div>
+        <div class="fld-r2" style="margin-bottom:20px">
+          <div class="fld"><label class="fld-lbl">Senha <span class="req">*</span></label><input class="fld-inp" id="cad-senha" type="password" placeholder="Mín. 6 caracteres"></div>
+          <div class="fld"><label class="fld-lbl">Confirmar senha</label><input class="fld-inp" id="cad-senha2" type="password" placeholder="Repita a senha"></div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="fazerCadastro()">Criar conta e entrar</button>
+        <button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="voltarPerfil()">← Voltar ao login</button>
+      </div>
+
+      <!-- STEP 4: Selecionar UAN -->
+      <div class="auth-step" id="step-uan">
+        <div class="success-ring">✅</div>
+        <h2 class="auth-title" style="text-align:center">Acesso liberado!</h2>
+        <p class="auth-sub" style="text-align:center">Selecione a unidade que deseja gerenciar.</p>
+
+        <div id="uan-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
+
+        <button class="btn btn-primary btn-full" onclick="entrarNoSistema()">
+          🚀 Entrar no sistema
+        </button>
+        <button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="abrirSetupUAN()">
+          + Adicionar nova UAN
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     TELA PRINCIPAL — APP
+════════════════════════════════════════ -->
+<div id="screen-app">
+
+  <!-- SIDEBAR (Espaço lateral) -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-mark">🥗</div>
+      <div>
+        <div class="sb-name">NutriConsult Pro</div>
+        <div class="sb-ver">v2.0 · Online</div>
+      </div>
+    </div>
+
+    <div class="sb-uan" onclick="openModal('modal-uan')">
+      <div class="sb-uan-lbl">Unidade ativa</div>
+      <div class="sb-uan-name" id="sb-uan-name">— <span class="sb-uan-arrow">▾</span></div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <div class="sb-item active" data-page="dashboard" onclick="navigate(this)">
+        <span class="sb-ico">📊</span> Dashboard
+      </div>
+      <div class="sb-item" data-page="checklists" onclick="navigate(this)">
+        <span class="sb-ico">✅</span> Checklists Diários
+        <span class="sb-badge sb-badge-red">3</span>
+      </div>
+      <div class="sb-item" data-page="nao-conformidades" onclick="navigate(this)">
+        <span class="sb-ico">⚠️</span> Não Conformidades
+        <span class="sb-badge sb-badge-amb">2</span>
+      </div>
+
+      <div class="sb-section">Técnico</div>
+      <div class="sb-item" data-page="fichas" onclick="navigate(this)">
+        <span class="sb-ico">🍽️</span> Fichas Técnicas
+      </div>
+      <div class="sb-item" data-page="taco" onclick="navigate(this)">
+        <span class="sb-ico">🌿</span> Tabela TACO
+      </div>
+      <div class="sb-item" data-page="custos" onclick="navigate(this)">
+        <span class="sb-ico">💰</span> Custo de Refeições
+      </div>
+
+      <div class="sb-section">Regulatório</div>
+      <div class="sb-item" data-page="pops" onclick="navigate(this)">
+        <span class="sb-ico">📄</span> POPs & MBP
+      </div>
+      <div class="sb-item" data-page="placas" onclick="navigate(this)">
+        <span class="sb-ico">🪧</span> Placas de Orientação
+      </div>
+
+      <div class="sb-section">Gestão</div>
+      <div class="sb-item" data-page="equipe" onclick="navigate(this)">
+        <span class="sb-ico">👥</span> Equipe
+        <span class="sb-badge sb-badge-grn">6</span>
+      </div>
+      <div class="sb-item" data-page="tarefas" onclick="navigate(this)">
+        <span class="sb-ico">📅</span> Tarefas
+        <span class="sb-badge sb-badge-amb">5</span>
+      </div>
+      <div class="sb-item" data-page="relatorios" onclick="navigate(this)">
+        <span class="sb-ico">📈</span> Relatórios
+      </div>
+      <div class="sb-item" data-page="painel-cliente" onclick="navigate(this)">
+        <span class="sb-ico">🏢</span> Painel do Cliente
+      </div>
+
+      <div class="sb-section">Sistema</div>
+      <div class="sb-item" data-page="permissoes" onclick="navigate(this)">
+        <span class="sb-ico">🔐</span> Permissões
+      </div>
+      <div class="sb-item" data-page="notificacoes" onclick="navigate(this)">
+        <span class="sb-ico">🔔</span> Notificações
+        <span class="sb-badge sb-badge-red">5</span>
+      </div>
+      <div class="sb-item" data-page="backup" onclick="navigate(this)">
+        <span class="sb-ico">💾</span> Backup & Dados
+      </div>
+      <div class="sb-item" data-page="configuracoes" onclick="navigate(this)">
+        <span class="sb-ico">⚙️</span> Configurações
+      </div>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-av" id="sb-av-initials">RT</div>
+        <div>
+          <div class="sb-user-name" id="sb-user-name">Nutricionista RT</div>
+          <div class="sb-user-role" id="sb-user-role">Responsável Técnico</div>
+        </div>
+        <button class="sb-settings" onclick="navigate(document.querySelector('[data-page=configuracoes]'))">⚙</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="tb-title" id="tb-title">Dashboard</div>
+        <div class="tb-sub" id="tb-sub">Visão geral da UAN</div>
+      </div>
+      <div class="tb-right">
+        <div class="notif-bell" onclick="navigate(document.querySelector('[data-page=notificacoes]'))">
+          🔔 <div class="notif-dot"></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="tb-action-2">↗ Exportar</button>
+        <button class="btn btn-primary btn-sm" id="tb-action-1" onclick="acaoPrincipal()">+ Nova Tarefa</button>
+      </div>
+    </div>
+
+    <!-- PÁGINAS -->
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-content">
+
+        <!-- Alertas -->
+        <div id="alertas-dashboard" style="margin-bottom:18px">
+          <div class="alert-strip as-crit">
+            <span class="as-ico">🌡️</span>
+            <div class="as-txt"><strong>Câmara Fria B — Temperatura crítica (9,2°C)</strong><p>Limite ≤ 4°C · Manutenção acionada · 14:30</p></div>
+            <span class="as-time">14:30</span>
+            <button class="btn btn-sm as-link" onclick="navigate(document.querySelector('[data-page=nao-conformidades]'))">Registrar NC</button>
+          </div>
+          <div class="alert-strip as-warn">
+            <span class="as-ico">🐛</span>
+            <div class="as-txt"><strong>Contrato de dedetização vencido</strong><p>POP 02 em 58% · Ação urgente</p></div>
+            <span class="as-time">Hoje</span>
+            <button class="btn btn-sm as-link" onclick="navigate(document.querySelector('[data-page=pops]'))">Ver POP 02</button>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-green">
+            <div class="kpi-icon">📊</div>
+            <div class="kpi-value" id="kpi-conf">84%</div>
+            <div class="kpi-label">Conformidade quinzenal</div>
+            <div class="kpi-trend trend-up">▲ +7% vs anterior</div>
+          </div>
+          <div class="kpi-card kpi-red">
+            <div class="kpi-icon">⚠️</div>
+            <div class="kpi-value">2</div>
+            <div class="kpi-label">NCs críticas abertas</div>
+            <div class="kpi-trend trend-down">Ação imediata</div>
+          </div>
+          <div class="kpi-card kpi-amber">
+            <div class="kpi-icon">💰</div>
+            <div class="kpi-value">R$8,42</div>
+            <div class="kpi-label">Custo per capita</div>
+            <div class="kpi-trend trend-up">▼ Meta R$9,00 ✓</div>
+          </div>
+          <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">👥</div>
+            <div class="kpi-value">6</div>
+            <div class="kpi-label">Colaboradores ativos</div>
+            <div class="kpi-trend trend-flat">5 com tarefas hoje</div>
+          </div>
+        </div>
+
+        <!-- Conformidade + Alertas -->
+        <div class="g2-1">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">📈 Evolução de Conformidade — 14 dias</div>
+              <span class="pill pill-n">Semanas 18–19</span>
+            </div>
+            <div class="card-body">
+              <div style="height:200px;position:relative"><canvas id="chart-conformidade"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">📊 Por categoria</div></div>
+            <div class="card-body">
+              <div class="bar-list">
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Higiene Manipuladores</span><span class="bar-value" style="color:var(--v600)">93%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:93%"></div></div></div>
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Documentação</span><span class="bar-value" style="color:var(--v600)">88%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:88%"></div></div></div>
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Recebimento</span><span class="bar-value" style="color:var(--v600)">85%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:85%"></div></div></div>
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Higiene Ambiente</span><span class="bar-value" style="color:#92610A">79%</span></div><div class="bar-track"><div class="bar-fill bf-a" style="width:79%"></div></div></div>
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Temperaturas</span><span class="bar-value" style="color:#92610A">72%</span></div><div class="bar-track"><div class="bar-fill bf-a" style="width:72%"></div></div></div>
+                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Controle Pragas</span><span class="bar-value" style="color:var(--red)">58%</span></div><div class="bar-track"><div class="bar-fill bf-r" style="width:58%"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acesso rápido -->
+        <div class="g3">
+          <div class="card" style="cursor:pointer" onclick="navigate(document.querySelector('[data-page=checklists]'))">
+            <div class="card-body" style="display:flex;align-items:center;gap:14px;padding:18px">
+              <div style="width:44px;height:44px;border-radius:12px;background:var(--v50);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✅</div>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--n900)">Checklist de Hoje</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">20/32 itens · 73%</div>
+              </div>
+              <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="navigate(document.querySelector('[data-page=fichas]'))">
+            <div class="card-body" style="display:flex;align-items:center;gap:14px;padding:18px">
+              <div style="width:44px;height:44px;border-radius:12px;background:var(--amb-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🍽️</div>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--n900)">Fichas Técnicas</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">14 preparações · R$8,42 pc</div>
+              </div>
+              <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="navigate(document.querySelector('[data-page=relatorios]'))">
+            <div class="card-body" style="display:flex;align-items:center;gap:14px;padding:18px">
+              <div style="width:44px;height:44px;border-radius:12px;background:var(--blue-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📈</div>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--n900)">Relatório Quinzenal</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">Pronto para apresentação</div>
+              </div>
+              <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ OUTRAS PÁGINAS (placeholder funcional) ══ -->
+    <div id="page-checklists" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">✅</div><div style="font-size:20px;font-weight:700;color:var(--n900)">Checklists Diários</div><div style="font-size:14px;color:var(--n400)">Módulo completo com controle de temperatura, NCs e assinatura digital.<br>Acesse o arquivo <strong>NutriConsult_Checklists.html</strong> para a versão completa.</div><button class="btn btn-primary" onclick="showToast('✅ Módulo de Checklists integrado em breve!')">Acessar módulo completo</button></div></div></div>
+
+    <div id="page-nao-conformidades" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">⚠️</div><div style="font-size:20px;font-weight:700">Não Conformidades</div><div style="font-size:14px;color:var(--n400)">Registro, acompanhamento e ações corretivas.<br>Disponível no módulo de Checklists.</div><button class="btn btn-primary" onclick="openModal('modal-nc')">+ Registrar NC agora</button></div></div></div>
+
+    <div id="page-fichas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🍽️</div><div style="font-size:20px;font-weight:700">Fichas Técnicas + TACO</div><div style="font-size:14px;color:var(--n400)">Cálculo de custo e valor nutricional integrado à Tabela TACO.</div><button class="btn btn-primary" onclick="showToast('🍽️ Módulo FTP integrado em breve!')">Acessar módulo completo</button></div></div></div>
+
+    <div id="page-taco" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🌿</div><div style="font-size:20px;font-weight:700">Tabela TACO</div><div style="font-size:14px;color:var(--n400)">Integrada nas Fichas Técnicas.</div><button class="btn btn-outline" onclick="navigate(document.querySelector('[data-page=fichas]'))">Ir para Fichas</button></div></div></div>
+
+    <div id="page-custos" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">💰</div><div style="font-size:20px;font-weight:700">Custo de Refeições</div><div style="font-size:14px;color:var(--n400)">Análise financeira calculada automaticamente pelas Fichas Técnicas.</div></div></div></div>
+
+    <div id="page-pops" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📄</div><div style="font-size:20px;font-weight:700">POPs & Manual de Boas Práticas</div><div style="font-size:14px;color:var(--n400)">8 POPs completos baseados na RDC 216/2004, editáveis e prontos para assinar.</div><button class="btn btn-primary" onclick="showToast('📄 Abrindo módulo de POPs...')">Abrir módulo completo</button></div></div></div>
+
+    <div id="page-placas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🪧</div><div style="font-size:20px;font-weight:700">Placas de Orientação</div><div style="font-size:14px;color:var(--n400)">Templates prontos para impressão em A4/A3.</div></div></div></div>
+
+    <div id="page-equipe" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">👥</div><div style="font-size:20px;font-weight:700">Gestão de Equipe</div><div style="font-size:14px;color:var(--n400)">Colaboradores, escala e desempenho.</div><button class="btn btn-primary" onclick="openModal('modal-membro')">+ Adicionar membro</button></div></div></div>
+
+    <div id="page-tarefas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📅</div><div style="font-size:20px;font-weight:700">Kanban de Tarefas</div><div style="font-size:14px;color:var(--n400)">5 pendentes · 4 em andamento · 12 concluídas</div><button class="btn btn-primary" onclick="openModal('modal-tarefa')">+ Nova tarefa</button></div></div></div>
+
+    <div id="page-relatorios" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📈</div><div style="font-size:20px;font-weight:700">Relatório Quinzenal</div><div style="font-size:14px;color:var(--n400)">Semanas 18–19 · 196 registros · Conformidade 84%</div><button class="btn btn-primary" onclick="showToast('📈 Gerando relatório...')">▶ Modo apresentação</button></div></div></div>
+
+    <div id="page-painel-cliente" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🏢</div><div style="font-size:20px;font-weight:700">Painel do Estabelecimento</div><div style="font-size:14px;color:var(--n400)">Visão executiva para o dono — somente leitura.</div><button class="btn btn-primary" onclick="showToast('🏢 Abrindo painel do cliente...')">Abrir painel</button></div></div></div>
+
+    <div id="page-permissoes" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🔐</div><div style="font-size:20px;font-weight:700">Controle de Permissões</div><div style="font-size:14px;color:var(--n400)">O Nutricionista RT define quem acessa cada módulo.</div><button class="btn btn-primary" onclick="openModal('modal-permissoes')">Gerenciar permissões</button></div></div></div>
+
+    <div id="page-notificacoes" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🔔</div><div style="font-size:20px;font-weight:700">Notificações</div><div style="font-size:14px;color:var(--n400)">5 não lidas · Alertas de prazo e conformidade.</div></div></div></div>
+
+    <div id="page-backup" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">💾</div><div style="font-size:20px;font-weight:700">Backup & Exportação</div><div style="font-size:14px;color:var(--n400)">JSON · Excel · PDF · Supabase</div><button class="btn btn-primary" onclick="showToast('💾 Backup realizado!')">Fazer backup agora</button></div></div></div>
+
+    <div id="page-configuracoes" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">⚙️</div><div style="font-size:20px;font-weight:700">Configurações</div><div style="font-size:14px;color:var(--n400)">Perfil, UANs, metas, segurança e visual.</div><button class="btn btn-danger" onclick="fazerLogout()">Sair do sistema</button></div></div></div>
+
+  </div>
+</div>
+
+<!-- MODAIS -->
+<div class="modal-overlay" id="modal-nc">
+  <div class="modal">
+    <div class="modal-head"><div><h2>⚠️ Registrar Não Conformidade</h2><p>Preencha todos os campos obrigatórios</p></div><button class="modal-close" onclick="closeModal('modal-nc')">✕</button></div>
+    <div class="modal-body">
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Categoria</label><select class="fld-sel"><option>Temperatura</option><option>Higiene</option><option>Documentação</option><option>Pragas</option></select></div><div class="fld"><label class="fld-lbl">Severidade</label><select class="fld-sel"><option>🔴 Crítica</option><option>🟡 Moderada</option><option>🟢 Leve</option></select></div></div>
+      <div class="fld"><label class="fld-lbl">Descrição <span class="req">*</span></label><textarea class="fld-area" placeholder="Descreva o que foi encontrado..."></textarea></div>
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Local</label><input class="fld-inp" placeholder="Ex: Câmara Fria B"></div><div class="fld"><label class="fld-lbl">Horário</label><input class="fld-inp" type="time"></div></div>
+      <div class="fld"><label class="fld-lbl">Ação corretiva imediata</label><textarea class="fld-area" placeholder="O que foi feito imediatamente..." style="min-height:60px"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-nc')">Cancelar</button><button class="btn btn-danger" onclick="closeModal('modal-nc');showToast('⚠️ NC registrada com sucesso!')">Registrar NC</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-tarefa">
+  <div class="modal">
+    <div class="modal-head"><div><h2>📅 Nova Tarefa</h2><p>Atribuir para membro da equipe</p></div><button class="modal-close" onclick="closeModal('modal-tarefa')">✕</button></div>
+    <div class="modal-body">
+      <div class="fld"><label class="fld-lbl">Título <span class="req">*</span></label><input class="fld-inp" placeholder="Descreva a tarefa..."></div>
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Categoria</label><select class="fld-sel"><option>Regulatório</option><option>Higiene</option><option>Monitoramento</option><option>Documentação</option></select></div><div class="fld"><label class="fld-lbl">Prioridade</label><select class="fld-sel"><option>🔴 Alta</option><option>🟡 Média</option><option>🟢 Baixa</option></select></div></div>
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Responsável</label><select class="fld-sel"><option>Maria Silva</option><option>João Costa</option><option>Ana Lima</option></select></div><div class="fld"><label class="fld-lbl">Prazo</label><input class="fld-inp" type="date"></div></div>
+      <div class="fld"><label class="fld-lbl">Descrição</label><textarea class="fld-area" placeholder="Detalhes..."></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-tarefa')">Cancelar</button><button class="btn btn-primary" onclick="closeModal('modal-tarefa');showToast('✅ Tarefa criada!')">Criar tarefa</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-membro">
+  <div class="modal">
+    <div class="modal-head"><div><h2>👤 Adicionar Membro</h2><p>Novo colaborador na equipe</p></div><button class="modal-close" onclick="closeModal('modal-membro')">✕</button></div>
+    <div class="modal-body">
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Nome <span class="req">*</span></label><input class="fld-inp" placeholder="Nome completo"></div><div class="fld"><label class="fld-lbl">Registro</label><input class="fld-inp" placeholder="CRN ou matrícula"></div></div>
+      <div class="fld-r2"><div class="fld"><label class="fld-lbl">Cargo</label><select class="fld-sel"><option>Nutricionista</option><option>Técnico em Nutrição</option><option>Estagiário</option><option>Assistente Adm.</option></select></div><div class="fld"><label class="fld-lbl">E-mail</label><input class="fld-inp" type="email" placeholder="email@email.com"></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-membro')">Cancelar</button><button class="btn btn-primary" onclick="closeModal('modal-membro');showToast('✅ Membro adicionado!')">Adicionar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-uan">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><div><h2>🏢 Selecionar Unidade</h2><p>Troque entre suas UANs</p></div><button class="modal-close" onclick="closeModal('modal-uan')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:8px" id="modal-uan-list"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-uan')">Fechar</button><button class="btn btn-primary" onclick="closeModal('modal-uan');showToast('+ Abrir setup de nova UAN...')">+ Nova UAN</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-permissoes">
+  <div class="modal">
+    <div class="modal-head"><div><h2>🔐 Controle de Permissões</h2><p>Defina o que cada perfil pode acessar</p></div><button class="modal-close" onclick="closeModal('modal-permissoes')">✕</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--n500);margin-bottom:12px">Selecione o perfil para editar suas permissões:</div>
+      <select class="fld-sel" style="margin-bottom:16px" onchange="mostrarPermissoes(this.value)">
+        <option value="tecnico">Técnico em Nutrição</option>
+        <option value="estagiario">Estagiário</option>
+        <option value="adm">Assistente Administrativo</option>
+        <option value="cliente">Administrador do Estabelecimento</option>
+      </select>
+      <div id="perm-toggles"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-permissoes')">Cancelar</button><button class="btn btn-primary" onclick="closeModal('modal-permissoes');showToast('✅ Permissões salvas!')">Salvar permissões</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-msg">✅ Pronto!</span></div>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT PRINCIPAL
+════════════════════════════════════════ -->
+<script>
+
+// ══════════════════════════════════════
+// CONFIGURAÇÃO SUPABASE
+// ══════════════════════════════════════
+// SUBSTITUA COM SUAS CREDENCIAIS APÓS CRIAR O PROJETO:
+const SUPABASE_URL = 'https://bifinsgubmxuabfkqzho.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZmluc2d1Ym14dWFiZmtxemhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MTc0NDksImV4cCI6MjA5NDI5MzQ0OX0.TH7geq_P8B52nIAVSKqt2_0oA55BBiupttTOxEl7MP8';
+
+// Inicializa Supabase (se credenciais configuradas)
+let supabase_client = null;
+try {
+  if (SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && window.supabase) {
+    supabase_client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase conectado');
+  }
+} catch(e) {
+  console.log('ℹ️ Modo demo — Supabase não configurado');
+}
+
+// ══════════════════════════════════════
+// DADOS DOS PERFIS
+// ══════════════════════════════════════
+const PERFIS = {
+  consultor: {
+    nome: 'Consultor Principal',
+    role: 'Nutricionista Responsável · Acesso total',
+    emoji: '🥗',
+    cor: 'linear-gradient(135deg, #0F5229, #27AE60)',
+    email_demo: 'consultor@demo.com',
+    senha_demo: '123456',
+    badges: ['Acesso total','Relatórios','Configurações','Permissões'],
+    badge_class: ['pb-full','pb-full','pb-full','pb-full'],
+  },
+  nutricionista: {
+    nome: 'Nutricionista RT',
+    role: 'Responsável Técnico · Supervisão operacional',
+    emoji: '👩‍⚕️',
+    cor: 'linear-gradient(135deg, #1A3F6F, #2471A3)',
+    email_demo: 'rt@demo.com',
+    senha_demo: '123456',
+    badges: ['Fichas TACO','POPs','Checklists','Equipe'],
+    badge_class: ['pb-tech','pb-tech','pb-ops','pb-tech'],
+  },
+  tecnico: {
+    nome: 'Técnico em Nutrição',
+    role: 'Execução e registros diários',
+    emoji: '🔬',
+    cor: 'linear-gradient(135deg, #7D4E00, #E67E22)',
+    email_demo: 'tecnico@demo.com',
+    senha_demo: '123456',
+    badges: ['Checklists','Temperaturas','NCs'],
+    badge_class: ['pb-ops','pb-ops','pb-ops'],
+  },
+  estagiario: {
+    nome: 'Estagiário',
+    role: 'Suporte supervisionado',
+    emoji: '📚',
+    cor: 'linear-gradient(135deg, #4A1D96, #7C3AED)',
+    email_demo: 'estagiario@demo.com',
+    senha_demo: '123456',
+    badges: ['Checklists','FTPs básico'],
+    badge_class: ['pb-ops','pb-ops'],
+  },
+  admin_estab: {
+    nome: 'Administrador do Estabelecimento',
+    role: 'Dono ou gerente · Somente leitura',
+    emoji: '🏢',
+    cor: 'linear-gradient(135deg, #374151, #6B7280)',
+    email_demo: 'admin@demo.com',
+    senha_demo: '123456',
+    badges: ['Relatórios','Dashboard'],
+    badge_class: ['pb-read','pb-read'],
+  },
+};
+
+let perfilSelecionado = null;
+let usuarioLogado     = null;
+let uanAtiva          = null;
+
+// ══════════════════════════════════════
+// RENDERIZA PERFIS NA TELA DE AUTH
+// ══════════════════════════════════════
+function renderPerfis() {
+  const list = document.getElementById('profiles-list');
+  list.innerHTML = Object.entries(PERFIS).map(([key, p]) => `
+    <div class="profile-opt" data-perfil="${key}" onclick="selecionarPerfil('${key}',this)">
+      <div class="po-av" style="background:${p.cor}">${p.emoji}</div>
+      <div class="po-info">
+        <div class="po-name">${p.nome}</div>
+        <div class="po-role">${p.role}</div>
+        <div class="po-badges">
+          ${p.badges.map((b,i) => `<span class="po-badge ${p.badge_class[i]}">${b}</span>`).join('')}
+        </div>
+      </div>
+      <div class="po-radio"></div>
+    </div>
+  `).join('');
+}
+
+function selecionarPerfil(key, el) {
+  document.querySelectorAll('.profile-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('.po-radio').textContent = '✓';
+  perfilSelecionado = key;
+  document.getElementById('btn-next-perfil').disabled = false;
+}
+
+function irParaLogin() {
+  if (!perfilSelecionado) return;
+  const p = PERFIS[perfilSelecionado];
+
+  // Badge
+  document.getElementById('badge-av').textContent   = p.emoji;
+  document.getElementById('badge-av').style.background = p.cor;
+  document.getElementById('badge-name').textContent = p.nome;
+  document.getElementById('badge-role').textContent = p.role;
+
+  // Demo credentials
+  document.getElementById('demo-cred-text').innerHTML =
+    `<span>E-mail: <strong>${p.email_demo}</strong></span>
+     <span>Senha: <strong>${p.senha_demo}</strong></span>`;
+
+  showAuthStep('step-login');
+}
+
+function voltarPerfil() { showAuthStep('step-perfil'); }
+function irParaCadastro() { showAuthStep('step-cadastro'); }
+
+function showAuthStep(id) {
+  document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════════
+// LOGIN — Supabase Real
+// ══════════════════════════════════════
+async function fazerLogin() {
+  const email = document.getElementById('input-email').value.trim();
+  const senha = document.getElementById('input-senha').value;
+  const btn   = document.getElementById('btn-login');
+  const txt   = document.getElementById('login-txt');
+  const spin  = document.getElementById('login-spin');
+
+  document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.form-input').forEach(i => i.classList.remove('err'));
+
+  if (!email) { mostrarErro('err-email','input-email','Informe o e-mail.'); return; }
+  if (!senha)  { mostrarErro('err-senha','input-senha','Informe a senha.'); return; }
+
+  btn.disabled = true; txt.style.display = 'none'; spin.style.display = 'block';
+
+  try {
+    if (supabase_client) {
+      const { data, error } = await supabase_client.auth.signInWithPassword({ email, password: senha });
+      if (error) {
+        if (error.message.includes('Invalid login') || error.message.includes('invalid_credentials')) {
+          throw new Error('credenciais');
+        }
+        throw error;
+      }
+      usuarioLogado = data.user;
+      // Busca perfil no banco
+      const { data: profile } = await supabase_client
+        .from('profiles').select('*').eq('id', data.user.id).single();
+      if (profile) {
+        usuarioLogado.nome  = profile.nome;
+        usuarioLogado.cargo = profile.cargo;
+        if (!perfilSelecionado) perfilSelecionado = profile.cargo;
+      }
+    } else {
+      // Demo fallback
+      const p = PERFIS[perfilSelecionado];
+      await new Promise(r => setTimeout(r, 900));
+      if (email !== p.email_demo || senha !== p.senha_demo) throw new Error('credenciais');
+      usuarioLogado = { email, nome: p.nome, perfil: perfilSelecionado };
+    }
+    await carregarUANs();
+  } catch (err) {
+    btn.disabled = false; txt.style.display = 'block'; spin.style.display = 'none';
+    if (err.message === 'credenciais') {
+      mostrarErro('err-email','input-email','E-mail ou senha incorretos. Verifique e tente novamente.');
+    } else if (err.message?.includes('Email not confirmed')) {
+      showToast('📧 Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.');
+    } else {
+      showToast('❌ Erro: ' + (err.message || 'Tente novamente.'));
+    }
+  }
+}
+
+function mostrarErro(errId, inputId, msg) {
+  const err = document.getElementById(errId);
+  const inp = document.getElementById(inputId);
+  err.textContent = msg;
+  err.classList.add('show');
+  inp.classList.add('err');
+  setTimeout(() => inp.classList.remove('err'), 600);
+}
+
+// ══════════════════════════════════════
+// CADASTRO — Supabase Real
+// ══════════════════════════════════════
+async function fazerCadastro() {
+  const nome   = document.getElementById('cad-nome').value.trim();
+  const crn    = document.getElementById('cad-crn').value.trim();
+  const email  = document.getElementById('cad-email').value.trim();
+  const senha  = document.getElementById('cad-senha').value;
+  const senha2 = document.getElementById('cad-senha2').value;
+
+  if (!nome || !email || !senha) { showToast('⚠️ Preencha todos os campos obrigatórios.'); return; }
+  if (senha.length < 6) { showToast('⚠️ A senha precisa ter pelo menos 6 caracteres.'); return; }
+  if (senha !== senha2)  { showToast('⚠️ As senhas não coincidem.'); return; }
+
+  try {
+    if (supabase_client) {
+      const { data, error } = await supabase_client.auth.signUp({
+        email, password: senha,
+        options: { data: { nome, cargo: 'consultor', crn } }
+      });
+      if (error) {
+        if (error.message.includes('already registered')) {
+          showToast('⚠️ Este e-mail já está cadastrado. Faça login.'); return;
+        }
+        throw error;
+      }
+      usuarioLogado = data.user;
+      usuarioLogado.nome = nome;
+      // Cria UAN inicial automaticamente
+      if (supabase_client && data.user) {
+        await new Promise(r => setTimeout(r, 800)); // aguarda trigger de perfil
+        await supabase_client.from('uans').insert({
+          consultor_id: data.user.id,
+          nome: 'Minha Primeira UAN',
+          cidade: 'Sua Cidade',
+          estado: 'BA',
+          tipo: 'corporativo',
+          ativo: true,
+        });
+      }
+    } else {
+      await new Promise(r => setTimeout(r, 800));
+      usuarioLogado = { email, nome, cargo: 'consultor' };
+    }
+    showToast('✅ Conta criada! Bem-vindo, ' + nome + '! Verifique seu e-mail se solicitado.');
+    perfilSelecionado = 'consultor';
+    await carregarUANs();
+  } catch(err) {
+    showToast('❌ Erro ao criar conta: ' + (err.message || 'Tente novamente.'));
+  }
+}
+
+// ══════════════════════════════════════
+// CARREGAR UANs DO BANCO
+// ══════════════════════════════════════
+async function carregarUANs() {
+  let uans = [];
+
+  if (supabase_client && usuarioLogado?.id) {
+    const { data, error } = await supabase_client
+      .from('uans')
+      .select('id, nome, cidade, estado, tipo, ativo')
+      .eq('consultor_id', usuarioLogado.id)
+      .order('created_at', { ascending: true });
+
+    if (!error && data) uans = data;
+  }
+
+  // Se não tem UANs, cria uma padrão
+  if (uans.length === 0) {
+    uans = [{ id: 'demo-1', nome: 'Rest. Corporativo Alfa', cidade: 'São Paulo', estado: 'SP', ativo: true }];
+  }
+
+  const list = document.getElementById('uan-list');
+  list.innerHTML = uans.map((u, i) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;
+      border:1.5px solid ${i===0?'var(--v400)':'var(--border)'};
+      background:${i===0?'var(--v50)':'var(--n0)'};
+      cursor:pointer;transition:all .15s"
+      onclick="selecionarUAN('${u.id}','${u.nome}',this)">
+      <div style="width:10px;height:10px;border-radius:50%;background:${u.ativo?'var(--v400)':'#E67E22'};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--n900)">${u.nome}</div>
+        <div style="font-size:11px;color:var(--n400);margin-top:1px">${u.cidade || ''}${u.estado?', '+u.estado:''} · ${u.ativo?'Ativa':'Em implantação'}</div>
+      </div>
+      ${i===0?'<span style="font-size:14px;color:var(--v500)">✓</span>':''}
+    </div>
+  `).join('');
+
+  uanAtiva = { id: uans[0].id, nome: uans[0].nome };
+  showAuthStep('step-uan');
+}
+
+// mostrarSelecaoUAN() substituída por carregarUANs()
+
+function selecionarUAN(id, nome, el) {
+  document.querySelectorAll('#uan-list > div').forEach(d => {
+    d.style.borderColor = 'var(--border)';
+    d.style.background  = 'var(--n0)';
+  });
+  el.style.borderColor = 'var(--v400)';
+  el.style.background  = 'var(--v50)';
+  uanAtiva = { id, nome };
+}
+
+function abrirSetupUAN() { showToast('🏗️ Abrindo configuração de nova UAN...'); }
+
+// ══════════════════════════════════════
+// ENTRAR NO SISTEMA
+// ══════════════════════════════════════
+function entrarNoSistema() {
+  const p = PERFIS[perfilSelecionado] || PERFIS.consultor;
+
+  // Atualiza sidebar com dados do usuário
+  const initials = (usuarioLogado?.nome || p.nome).split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sb-av-initials').textContent  = initials;
+  document.getElementById('sb-av-initials').style.background = p.cor;
+  document.getElementById('sb-user-name').textContent   = usuarioLogado?.nome || p.nome;
+  document.getElementById('sb-user-role').textContent   = p.role.split('·')[0].trim();
+  document.getElementById('sb-uan-name').innerHTML      = (uanAtiva?.nome || '—') + ' <span class="sb-uan-arrow">▾</span>';
+
+  // Mostra app
+  document.getElementById('screen-auth').style.display = 'none';
+  document.getElementById('screen-app').classList.add('active');
+
+  // Renderiza UAN no modal
+  renderModalUAN();
+
+  // Inicia gráfico
+  setTimeout(initCharts, 200);
+
+  showToast('✅ Bem-vindo! ' + (usuarioLogado?.nome || p.nome));
+}
+
+function fazerLogout() {
+  if (supabase_client) supabase_client.auth.signOut();
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-auth').style.display = 'grid';
+  perfilSelecionado = null; usuarioLogado = null; uanAtiva = null;
+  showAuthStep('step-perfil');
+  showToast('👋 Até logo!');
+}
+
+// ══════════════════════════════════════
+// NAVEGAÇÃO ENTRE PÁGINAS
+// ══════════════════════════════════════
+const PAGE_CONFIG = {
+  'dashboard':        { title:'Dashboard',                sub:'Visão geral da UAN · Semana atual',        action:'+ Nova Tarefa', action2:'↗ Exportar' },
+  'checklists':       { title:'Checklists Diários',       sub:'RDC 216 · Registro em tempo real',         action:'+ Novo Checklist', action2:'📄 Histórico' },
+  'nao-conformidades':{ title:'Não Conformidades',        sub:'Registro e acompanhamento',                action:'+ Registrar NC', action2:'↗ Exportar' },
+  'fichas':           { title:'Fichas Técnicas',          sub:'Integrado à Tabela TACO · 14 preparações', action:'+ Nova FTP', action2:'↗ Exportar' },
+  'taco':             { title:'Tabela TACO',              sub:'UNICAMP 2023 · 4000+ alimentos',           action:'🔍 Buscar', action2:'' },
+  'custos':           { title:'Custo de Refeições',       sub:'Análise financeira diária',                action:'📊 Relatório', action2:'' },
+  'pops':             { title:'POPs & Manual de Boas Práticas', sub:'RDC 216/2004 · 8 POPs completos',  action:'+ Novo POP', action2:'🖨️ Imprimir' },
+  'placas':           { title:'Placas de Orientação',     sub:'Templates prontos para impressão',         action:'+ Nova Placa', action2:'🖨️ Imprimir' },
+  'equipe':           { title:'Gestão de Equipe',         sub:'6 colaboradores ativos',                   action:'+ Membro', action2:'📅 Escala' },
+  'tarefas':          { title:'Tarefas',                  sub:'5 pendentes · 4 em andamento',             action:'+ Tarefa', action2:'📅 Calendário' },
+  'relatorios':       { title:'Relatório Quinzenal',      sub:'Semanas 18–19 · Pronto para apresentação', action:'▶ Apresentar', action2:'↗ Exportar' },
+  'painel-cliente':   { title:'Painel do Estabelecimento',sub:'Visão executiva · Somente leitura',        action:'🖨️ Imprimir', action2:'' },
+  'permissoes':       { title:'Controle de Permissões',   sub:'Definido pelo Nutricionista RT',           action:'Gerenciar', action2:'' },
+  'notificacoes':     { title:'Notificações',             sub:'5 não lidas',                              action:'✓ Marcar lidas', action2:'⚙️ Configurar' },
+  'backup':           { title:'Backup & Exportação',      sub:'Último backup: hoje 14:00',                action:'💾 Backup agora', action2:'↗ Exportar' },
+  'configuracoes':    { title:'Configurações',            sub:'Perfil, UANs e preferências',              action:'💾 Salvar', action2:'' },
+};
+
+function navigate(el) {
+  const pageId = el.dataset.page;
+  if (!pageId) return;
+
+  // Sidebar
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  // Páginas
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+
+  // Topbar
+  const cfg = PAGE_CONFIG[pageId] || { title: pageId, sub: '', action: '', action2: '' };
+  document.getElementById('tb-title').textContent   = cfg.title;
+  document.getElementById('tb-sub').textContent     = cfg.sub;
+  document.getElementById('tb-action-1').textContent = cfg.action;
+  document.getElementById('tb-action-2').textContent = cfg.action2;
+  document.getElementById('tb-action-2').style.display = cfg.action2 ? 'flex' : 'none';
+
+  window.scrollTo(0,0);
+}
+
+function acaoPrincipal() {
+  const page = document.querySelector('.page.active');
+  if (!page) return;
+  const id = page.id.replace('page-','');
+  if (id === 'dashboard' || id === 'tarefas') openModal('modal-tarefa');
+  else if (id === 'nao-conformidades')         openModal('modal-nc');
+  else if (id === 'equipe')                    openModal('modal-membro');
+  else if (id === 'permissoes')                openModal('modal-permissoes');
+  else if (id === 'backup')                    showToast('💾 Backup realizado com sucesso!');
+  else if (id === 'relatorios')                showToast('▶ Iniciando modo apresentação...');
+  else showToast('✅ Ação executada!');
+}
+
+// ══════════════════════════════════════
+// MODAL UAN (sidebar)
+// ══════════════════════════════════════
+function renderModalUAN() {
+  document.getElementById('modal-uan-list').innerHTML = `
+    <div style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--v400);background:var(--v50);display:flex;align-items:center;gap:10px;cursor:pointer" onclick="trocarUAN('Rest. Corporativo Alfa')">
+      <div style="width:9px;height:9px;border-radius:50%;background:var(--v400)"></div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--n900)">Rest. Corporativo Alfa</div><div style="font-size:11px;color:var(--n400)">São Paulo, SP · Ativa</div></div>
+      <span style="color:var(--v500);font-size:14px">✓</span>
+    </div>
+    <div style="padding:13px 16px;border-radius:10px;border:1px solid var(--border);background:var(--n0);display:flex;align-items:center;gap:10px;cursor:pointer;opacity:.7" onclick="trocarUAN('UAN Hospital Beta')">
+      <div style="width:9px;height:9px;border-radius:50%;background:#E67E22"></div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--n900)">UAN Hospital Beta</div><div style="font-size:11px;color:var(--n400)">São Paulo, SP · Em implantação</div></div>
+    </div>`;
+}
+
+function trocarUAN(nome) {
+  uanAtiva = { nome };
+  document.getElementById('sb-uan-name').innerHTML = nome + ' <span class="sb-uan-arrow">▾</span>';
+  closeModal('modal-uan');
+  showToast('🏢 Unidade alterada para ' + nome);
+}
+
+// ══════════════════════════════════════
+// PERMISSÕES
+// ══════════════════════════════════════
+const MODULOS_PERM = [
+  'Dashboard', 'Checklists Diários', 'Não Conformidades',
+  'Fichas Técnicas + TACO', 'POPs & MBP', 'Equipe & Tarefas',
+  'Relatório Quinzenal', 'Painel do Cliente', 'Backup & Dados', 'Configurações'
+];
+const PERM_DEFAULTS = {
+  tecnico:    [true,true,true,true,false,false,false,false,false,false],
+  estagiario: [true,true,false,true,false,false,false,false,false,false],
+  adm:        [true,false,false,false,false,false,false,false,false,false],
+  cliente:    [true,false,false,false,false,false,true,false,false,false],
+};
+
+function mostrarPermissoes(perfil) {
+  const defaults = PERM_DEFAULTS[perfil] || PERM_DEFAULTS.tecnico;
+  document.getElementById('perm-toggles').innerHTML = MODULOS_PERM.map((m,i) => `
+    <div class="toggle-row">
+      <div><div class="tr-name">${m}</div></div>
+      <button class="toggle ${defaults[i]?'on':''}" onclick="this.classList.toggle('on')"></button>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════
+// GRÁFICOS
+// ══════════════════════════════════════
+let charts = {};
+function initCharts() {
+  const dias = ['29/04','30/04','01/05','02/05','03/05','04/05','05/05','06/05','07/05','08/05','09/05','10/05','11/05','12/05'];
+  const conf = [82,78,90,84,93,88,76,68,91,80,95,82,89,73];
+
+  if (charts.conf) { charts.conf.destroy(); }
+
+  const ctx = document.getElementById('chart-conformidade');
+  if (!ctx) return;
+
+  charts.conf = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dias,
+      datasets: [
+        {
+          label: 'Conformidade %',
+          data: conf,
+          borderColor: '#1D8348',
+          backgroundColor: 'rgba(29,131,72,0.06)',
+          borderWidth: 2.5,
+          pointBackgroundColor: conf.map(v => v>=85?'#1D8348':v>=70?'#E67E22':'#C0392B'),
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.35,
+          fill: true,
+        },
+        {
+          label: 'Meta 80%',
+          data: Array(14).fill(80),
+          borderColor: 'rgba(0,0,0,0.15)',
+          borderWidth: 1.5,
+          borderDash: [6,4],
+          pointRadius: 0,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(13,13,13,0.9)',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.7)',
+          padding: 10,
+          cornerRadius: 8,
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { color: '#808080', font: { size: 10, family: 'JetBrains Mono, monospace' }, maxRotation: 45 }
+        },
+        y: {
+          min: 50, max: 100,
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { color: '#808080', font: { size: 10, family: 'JetBrains Mono, monospace' }, callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════
+function toggleSenha() {
+  const inp = document.getElementById('input-senha');
+  const eye = document.getElementById('btn-eye');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  eye.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+function preencherDemo() {
+  const p = PERFIS[perfilSelecionado];
+  if (!p) return;
+  document.getElementById('input-email').value = p.email_demo;
+  document.getElementById('input-senha').value = p.senha_demo;
+  document.getElementById('input-email').focus();
+}
+
+function openModal(id)  { document.getElementById(id)?.classList.add('open'); }
+function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+
+// Enter no auth
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const step = document.querySelector('.auth-step.active');
+    if (step?.id === 'step-login') fazerLogin();
+  }
+});
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderPerfis();
+mostrarPermissoes('tecnico');
+document.getElementById('tb-action-2').style.display = 'flex';
+</script>
+</body>
+</html>

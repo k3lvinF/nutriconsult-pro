@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "name": "nutriconsult-pro",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/NutriConsult_v3_Online.html"
+    },
+    {
+      "src": "/app",
+      "dest": "/NutriConsult_v3_Online.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/NutriConsult_v3_Online.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}
