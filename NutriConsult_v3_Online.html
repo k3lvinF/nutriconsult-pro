@@ -810,29 +810,52 @@ a { text-decoration: none; color: inherit; }
   <div class="auth-right">
     <div class="auth-card">
 
-      <!-- STEP 1: Escolha de perfil -->
-      <div class="auth-step active" id="step-perfil">
-        <div class="auth-step-label">Passo 1 de 3</div>
-        <h2 class="auth-title">Quem está<br>acessando?</h2>
-        <p class="auth-sub">Selecione seu perfil para personalizar sua experiência no sistema.</p>
-
-        <div class="profiles-list" id="profiles-list">
-          <!-- Gerado por JS -->
+      <!-- TELA DE ENTRADA -->
+      <div class="auth-step active" id="step-entrada">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--v600),var(--v400));display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px;box-shadow:0 4px 14px rgba(29,131,72,.35)">🥗</div>
+          <h2 style="font-family:var(--font-title);font-size:24px;font-weight:900;color:var(--n900);letter-spacing:-.3px;margin-bottom:4px">NutriConsult Pro</h2>
+          <p style="font-size:13px;color:var(--n400)">Sistema de gestão para UANs · v2.0</p>
         </div>
+
+        <button class="btn btn-primary btn-full" style="font-size:14px;padding:14px;border-radius:11px;margin-bottom:8px" onclick="irParaCadastro()">
+          ✨ Criar minha conta — é grátis
+        </button>
+        <div style="font-size:11px;color:var(--n400);text-align:center;margin-bottom:18px">
+          Sem cartão de crédito · Pronto em menos de 1 minuto
+        </div>
+
+        <div class="divider">já tenho uma conta</div>
+
+        <button class="btn btn-outline btn-full" style="margin-bottom:18px" onclick="mostrarPerfis()">
+          Entrar no sistema →
+        </button>
+
+        <div style="padding:13px 16px;background:var(--n50);border-radius:10px;border:1px dashed var(--n200)">
+          <div style="font-size:10px;font-weight:700;color:var(--n400);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">🧪 Demo — sem cadastro</div>
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--n700);line-height:1.8">
+            consultor@demo.com · senha: <strong>123456</strong>
+          </div>
+          <button style="margin-top:8px;background:none;border:none;font-size:12px;font-weight:700;color:var(--v600);cursor:pointer;padding:0" onclick="entrarComoDemo()">→ Entrar como demo agora</button>
+        </div>
+
+        <div style="margin-top:14px;text-align:center;font-size:11px;color:var(--n400)">
+          🔒 Supabase Auth · Criptografado · LGPD
+        </div>
+      </div>
+
+      <!-- STEP 1: Escolha de perfil (usuários existentes) -->
+      <div class="auth-step" id="step-perfil">
+        <button style="background:none;border:none;font-size:12px;font-weight:600;color:var(--v600);cursor:pointer;margin-bottom:16px;padding:0;display:flex;align-items:center;gap:5px" onclick="showAuthStep('step-entrada')">← Voltar</button>
+        <div class="auth-step-label">Identificação</div>
+        <h2 class="auth-title">Quem está<br>acessando?</h2>
+        <p class="auth-sub">Selecione seu perfil para continuar.</p>
+
+        <div class="profiles-list" id="profiles-list"></div>
 
         <button class="btn btn-primary btn-full" id="btn-next-perfil" onclick="irParaLogin()" disabled>
           Continuar →
         </button>
-
-        <div class="divider">ou</div>
-
-        <button class="btn btn-outline btn-full" onclick="irParaCadastro()">
-          Criar nova conta de consultor
-        </button>
-
-        <div style="margin-top:16px;text-align:center;font-size:11px;color:var(--n400)">
-          🔒 Sistema online seguro · Dados protegidos
-        </div>
       </div>
 
       <!-- STEP 2: Login -->
@@ -1383,12 +1406,38 @@ function irParaLogin() {
   showAuthStep('step-login');
 }
 
-function voltarPerfil() { showAuthStep('step-perfil'); }
+function voltarPerfil()   { showAuthStep('step-perfil'); }
+function mostrarPerfis()  { showAuthStep('step-perfil'); renderPerfis(); }
+function irParaCadastro() { showAuthStep('step-cadastro'); }
+
+async function entrarComoDemo() {
+  perfilSelecionado = 'consultor';
+  if (supabase_client) {
+    // Tenta login demo real
+    document.getElementById('input-email').value = 'consultor@demo.com';
+    document.getElementById('input-senha').value = '123456';
+    showAuthStep('step-login');
+    const p = PERFIS['consultor'];
+    document.getElementById('badge-av').textContent = p.emoji;
+    document.getElementById('badge-av').style.background = p.cor;
+    document.getElementById('badge-name').textContent = p.nome;
+    document.getElementById('badge-role').textContent = p.role;
+    document.getElementById('demo-cred-text').innerHTML =
+      '<span>E-mail: <strong>' + p.email_demo + '</strong></span><span>Senha: <strong>' + p.senha_demo + '</strong></span>';
+  } else {
+    usuarioLogado = { email: 'consultor@demo.com', nome: 'Consultor Demo', cargo: 'consultor' };
+    await carregarUANs();
+  }
+}
 function irParaCadastro() { showAuthStep('step-cadastro'); }
 
 function showAuthStep(id) {
   document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  // Scroll ao topo do painel
+  const ar = document.querySelector('.auth-right');
+  if (ar) ar.scrollTop = 0;
 }
 
 // ══════════════════════════════════════
@@ -1821,6 +1870,8 @@ function showToast(msg) {
 // ══════════════════════════════════════
 renderPerfis();
 mostrarPermissoes('tecnico');
+// Garante que começa na tela de entrada
+showAuthStep('step-entrada');
 document.getElementById('tb-action-2').style.display = 'flex';
 </script>
 </body>
