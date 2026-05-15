@@ -974,11 +974,11 @@ a { text-decoration: none; color: inherit; }
       </div>
       <div class="sb-item" data-page="checklists" onclick="navigate(this)">
         <span class="sb-ico">✅</span> Checklists Diários
-        <span class="sb-badge sb-badge-red">3</span>
+        
       </div>
       <div class="sb-item" data-page="nao-conformidades" onclick="navigate(this)">
         <span class="sb-ico">⚠️</span> Não Conformidades
-        <span class="sb-badge sb-badge-amb">2</span>
+        
       </div>
 
       <div class="sb-section">Técnico</div>
@@ -1003,11 +1003,11 @@ a { text-decoration: none; color: inherit; }
       <div class="sb-section">Gestão</div>
       <div class="sb-item" data-page="equipe" onclick="navigate(this)">
         <span class="sb-ico">👥</span> Equipe
-        <span class="sb-badge sb-badge-grn">6</span>
+        
       </div>
       <div class="sb-item" data-page="tarefas" onclick="navigate(this)">
         <span class="sb-ico">📅</span> Tarefas
-        <span class="sb-badge sb-badge-amb">5</span>
+        
       </div>
       <div class="sb-item" data-page="relatorios" onclick="navigate(this)">
         <span class="sb-ico">📈</span> Relatórios
@@ -1022,7 +1022,7 @@ a { text-decoration: none; color: inherit; }
       </div>
       <div class="sb-item" data-page="notificacoes" onclick="navigate(this)">
         <span class="sb-ico">🔔</span> Notificações
-        <span class="sb-badge sb-badge-red">5</span>
+        
       </div>
       <div class="sb-item" data-page="backup" onclick="navigate(this)">
         <span class="sb-ico">💾</span> Backup & Dados
@@ -1071,19 +1071,15 @@ a { text-decoration: none; color: inherit; }
     <div id="page-dashboard" class="page active">
       <div class="page-content">
 
-        <!-- Alertas -->
+        <!-- Alertas — carregados do banco -->
         <div id="alertas-dashboard" style="margin-bottom:18px">
-          <div class="alert-strip as-crit">
-            <span class="as-ico">🌡️</span>
-            <div class="as-txt"><strong>Câmara Fria B — Temperatura crítica (9,2°C)</strong><p>Limite ≤ 4°C · Manutenção acionada · 14:30</p></div>
-            <span class="as-time">14:30</span>
-            <button class="btn btn-sm as-link" onclick="navigate(document.querySelector('[data-page=nao-conformidades]'))">Registrar NC</button>
-          </div>
-          <div class="alert-strip as-warn">
-            <span class="as-ico">🐛</span>
-            <div class="as-txt"><strong>Contrato de dedetização vencido</strong><p>POP 02 em 58% · Ação urgente</p></div>
-            <span class="as-time">Hoje</span>
-            <button class="btn btn-sm as-link" onclick="navigate(document.querySelector('[data-page=pops]'))">Ver POP 02</button>
+          <div style="padding:14px 18px;background:var(--v50);border-radius:10px;border:1px solid var(--v200);display:flex;align-items:center;gap:12px;color:var(--v700);font-size:13px">
+            <span style="font-size:20px">✅</span>
+            <div>
+              <strong>Sem alertas no momento</strong>
+              <div style="font-size:11px;color:var(--v500);margin-top:2px">Registre checklists diários para ativar o monitoramento automático de conformidade.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="margin-left:auto;white-space:nowrap" onclick="navigate(document.querySelector('[data-page=checklists]'))">Iniciar Checklist →</button>
           </div>
         </div>
 
@@ -1091,27 +1087,27 @@ a { text-decoration: none; color: inherit; }
         <div class="kpi-grid">
           <div class="kpi-card kpi-green">
             <div class="kpi-icon">📊</div>
-            <div class="kpi-value" id="kpi-conf">84%</div>
+            <div class="kpi-value" id="kpi-conf" style="color:var(--n300)">—</div>
             <div class="kpi-label">Conformidade quinzenal</div>
-            <div class="kpi-trend trend-up">▲ +7% vs anterior</div>
+            <div class="kpi-trend trend-flat" style="color:var(--n400)">Sem dados ainda</div>
           </div>
           <div class="kpi-card kpi-red">
             <div class="kpi-icon">⚠️</div>
-            <div class="kpi-value">2</div>
+            <div class="kpi-value" style="color:var(--n300)">—</div>
             <div class="kpi-label">NCs críticas abertas</div>
-            <div class="kpi-trend trend-down">Ação imediata</div>
+            <div class="kpi-trend trend-flat" style="color:var(--n400)">Sem dados ainda</div>
           </div>
           <div class="kpi-card kpi-amber">
             <div class="kpi-icon">💰</div>
-            <div class="kpi-value">R$8,42</div>
-            <div class="kpi-label">Custo per capita</div>
-            <div class="kpi-trend trend-up">▼ Meta R$9,00 ✓</div>
+            <div class="kpi-value" style="color:var(--n300)">—</div>
+            <div class="kpi-label">CMV médio / Refeição</div>
+            <div class="kpi-trend trend-flat" style="color:var(--n400)">Sem dados ainda</div>
           </div>
           <div class="kpi-card kpi-blue">
             <div class="kpi-icon">👥</div>
-            <div class="kpi-value">6</div>
+            <div class="kpi-value" style="color:var(--n300)" id="kpi-colab">—</div>
             <div class="kpi-label">Colaboradores ativos</div>
-            <div class="kpi-trend trend-flat">5 com tarefas hoje</div>
+            <div class="kpi-trend trend-flat" style="color:var(--n400)">Cadastre a equipe</div>
           </div>
         </div>
 
@@ -1129,13 +1125,11 @@ a { text-decoration: none; color: inherit; }
           <div class="card">
             <div class="card-head"><div class="card-title">📊 Por categoria</div></div>
             <div class="card-body">
-              <div class="bar-list">
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Higiene Manipuladores</span><span class="bar-value" style="color:var(--v600)">93%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:93%"></div></div></div>
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Documentação</span><span class="bar-value" style="color:var(--v600)">88%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:88%"></div></div></div>
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Recebimento</span><span class="bar-value" style="color:var(--v600)">85%</span></div><div class="bar-track"><div class="bar-fill bf-g" style="width:85%"></div></div></div>
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Higiene Ambiente</span><span class="bar-value" style="color:#92610A">79%</span></div><div class="bar-track"><div class="bar-fill bf-a" style="width:79%"></div></div></div>
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Temperaturas</span><span class="bar-value" style="color:#92610A">72%</span></div><div class="bar-track"><div class="bar-fill bf-a" style="width:72%"></div></div></div>
-                <div class="bar-item"><div class="bar-meta"><span class="bar-label">Controle Pragas</span><span class="bar-value" style="color:var(--red)">58%</span></div><div class="bar-track"><div class="bar-fill bf-r" style="width:58%"></div></div></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 0;gap:10px;color:var(--n400);text-align:center">
+                <span style="font-size:32px">📋</span>
+                <div style="font-size:13px;font-weight:600;color:var(--n600)">Sem dados de conformidade</div>
+                <div style="font-size:12px">Registre checklists diários para visualizar o desempenho por categoria.</div>
+                <button class="btn btn-primary btn-sm" onclick="navigate(document.querySelector('[data-page=checklists]'))">Iniciar primeiro checklist</button>
               </div>
             </div>
           </div>
@@ -1148,7 +1142,7 @@ a { text-decoration: none; color: inherit; }
               <div style="width:44px;height:44px;border-radius:12px;background:var(--v50);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✅</div>
               <div>
                 <div style="font-size:14px;font-weight:700;color:var(--n900)">Checklist de Hoje</div>
-                <div style="font-size:12px;color:var(--n400);margin-top:2px">20/32 itens · 73%</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">Nenhum registro hoje</div>
               </div>
               <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
             </div>
@@ -1158,7 +1152,7 @@ a { text-decoration: none; color: inherit; }
               <div style="width:44px;height:44px;border-radius:12px;background:var(--amb-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🍽️</div>
               <div>
                 <div style="font-size:14px;font-weight:700;color:var(--n900)">Fichas Técnicas</div>
-                <div style="font-size:12px;color:var(--n400);margin-top:2px">14 preparações · R$8,42 pc</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">Nenhuma FTP cadastrada</div>
               </div>
               <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
             </div>
@@ -1168,7 +1162,7 @@ a { text-decoration: none; color: inherit; }
               <div style="width:44px;height:44px;border-radius:12px;background:var(--blue-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📈</div>
               <div>
                 <div style="font-size:14px;font-weight:700;color:var(--n900)">Relatório Quinzenal</div>
-                <div style="font-size:12px;color:var(--n400);margin-top:2px">Pronto para apresentação</div>
+                <div style="font-size:12px;color:var(--n400);margin-top:2px">Dados insuficientes</div>
               </div>
               <span style="margin-left:auto;font-size:18px;color:var(--n300)">→</span>
             </div>
@@ -1189,15 +1183,15 @@ a { text-decoration: none; color: inherit; }
 
     <div id="page-custos" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">💰</div><div style="font-size:20px;font-weight:700">Custo de Refeições</div><div style="font-size:14px;color:var(--n400)">Análise financeira calculada automaticamente pelas Fichas Técnicas.</div></div></div></div>
 
-    <div id="page-pops" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📄</div><div style="font-size:20px;font-weight:700">POPs & Manual de Boas Práticas</div><div style="font-size:14px;color:var(--n400)">8 POPs completos baseados na RDC 216/2004, editáveis e prontos para assinar.</div><button class="btn btn-primary" onclick="showToast('📄 Abrindo módulo de POPs...')">Abrir módulo completo</button></div></div></div>
+    <div id="page-pops" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px;text-align:center"><div style="font-size:48px">📄</div><div style="font-size:20px;font-weight:700;color:var(--n900)">POPs & Manual de Boas Práticas</div><div style="font-size:14px;color:var(--n400);max-width:420px;line-height:1.7">8 POPs obrigatórios baseados na <strong>RDC 216/2004</strong> e <strong>RDC 275/2002</strong>, editáveis, com editor completo e exportação em PDF.</div><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a href="NutriConsult_POPs_MBP_v2.html" class="btn btn-primary btn-lg">📄 Abrir POPs & MBP</a><a href="NutriConsult_POPs_MBP_v2.html#mbp" class="btn btn-outline btn-lg">📋 Ir para o MBP</a></div><div style="font-size:11px;color:var(--n400);margin-top:4px">Abre em nova aba · Todos os dados são salvos automaticamente</div></div></div></div>
 
-    <div id="page-placas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🪧</div><div style="font-size:20px;font-weight:700">Placas de Orientação</div><div style="font-size:14px;color:var(--n400)">Templates prontos para impressão em A4/A3.</div></div></div></div>
+    <div id="page-placas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px;text-align:center"><div style="font-size:48px">🪧</div><div style="font-size:20px;font-weight:700;color:var(--n900)">Placas de Orientação</div><div style="font-size:14px;color:var(--n400);max-width:420px;line-height:1.7">6 modelos prontos: Lavagem das mãos, EPI, Temperaturas seguras, Proibições, Fluxo de produção e Coleta seletiva. Impressão direta em A4.</div><a href="NutriConsult_POPs_MBP_v2.html#placas" class="btn btn-primary btn-lg">🪧 Abrir Placas de Orientação</a><div style="font-size:11px;color:var(--n400);margin-top:4px">Abre no módulo de POPs & MBP · Aba "Placas de Orientação"</div></div></div></div>
 
     <div id="page-equipe" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">👥</div><div style="font-size:20px;font-weight:700">Gestão de Equipe</div><div style="font-size:14px;color:var(--n400)">Colaboradores, escala e desempenho.</div><button class="btn btn-primary" onclick="openModal('modal-membro')">+ Adicionar membro</button></div></div></div>
 
     <div id="page-tarefas" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📅</div><div style="font-size:20px;font-weight:700">Kanban de Tarefas</div><div style="font-size:14px;color:var(--n400)">5 pendentes · 4 em andamento · 12 concluídas</div><button class="btn btn-primary" onclick="openModal('modal-tarefa')">+ Nova tarefa</button></div></div></div>
 
-    <div id="page-relatorios" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📈</div><div style="font-size:20px;font-weight:700">Relatório Quinzenal</div><div style="font-size:14px;color:var(--n400)">Semanas 18–19 · 196 registros · Conformidade 84%</div><button class="btn btn-primary" onclick="showToast('📈 Gerando relatório...')">▶ Modo apresentação</button></div></div></div>
+    <div id="page-relatorios" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">📈</div><div style="font-size:20px;font-weight:700">Relatório Quinzenal</div><div style="font-size:14px;color:var(--n400)">Registre dados por 15 dias para gerar</div><button class="btn btn-primary" onclick="showToast('📋 Registre dados por 15 dias para gerar o relatório.')">📋 Como gerar relatório</button></div></div></div>
 
     <div id="page-painel-cliente" class="page"><div class="page-content"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;text-align:center"><div style="font-size:48px">🏢</div><div style="font-size:20px;font-weight:700">Painel do Estabelecimento</div><div style="font-size:14px;color:var(--n400)">Visão executiva para o dono — somente leitura.</div><button class="btn btn-primary" onclick="showToast('🏢 Abrindo painel do cliente...')">Abrir painel</button></div></div></div>
 
@@ -1681,7 +1675,7 @@ const PAGE_CONFIG = {
   'placas':           { title:'Placas de Orientação',     sub:'Templates prontos para impressão',         action:'+ Nova Placa', action2:'🖨️ Imprimir' },
   'equipe':           { title:'Gestão de Equipe',         sub:'6 colaboradores ativos',                   action:'+ Membro', action2:'📅 Escala' },
   'tarefas':          { title:'Tarefas',                  sub:'5 pendentes · 4 em andamento',             action:'+ Tarefa', action2:'📅 Calendário' },
-  'relatorios':       { title:'Relatório Quinzenal',      sub:'Semanas 18–19 · Pronto para apresentação', action:'▶ Apresentar', action2:'↗ Exportar' },
+  'relatorios':       { title:'Relatório Quinzenal',      sub:'Semanas 18–19 · Dados insuficientes', action:'▶ Apresentar', action2:'↗ Exportar' },
   'painel-cliente':   { title:'Painel do Estabelecimento',sub:'Visão executiva · Somente leitura',        action:'🖨️ Imprimir', action2:'' },
   'permissoes':       { title:'Controle de Permissões',   sub:'Definido pelo Nutricionista RT',           action:'Gerenciar', action2:'' },
   'notificacoes':     { title:'Notificações',             sub:'5 não lidas',                              action:'✓ Marcar lidas', action2:'⚙️ Configurar' },
@@ -1809,8 +1803,8 @@ function mostrarPermissoes(perfil) {
 // ══════════════════════════════════════
 let charts = {};
 function initCharts() {
-  const dias = ['29/04','30/04','01/05','02/05','03/05','04/05','05/05','06/05','07/05','08/05','09/05','10/05','11/05','12/05'];
-  const conf = [82,78,90,84,93,88,76,68,91,80,95,82,89,73];
+  const dias = [];
+  const conf  = [];
 
   if (charts.conf) { charts.conf.destroy(); }
 

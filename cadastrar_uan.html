@@ -858,17 +858,12 @@ body {
       </div>
 
       <div class="form-section">
-        <div class="fs-title">📋 Metas e Configurações</div>
+        <div class="fs-title">📊 Meta de Conformidade Sanitária</div>
         <div class="fld-grid c2">
           <div class="fld">
             <label class="fld-lbl">Meta de conformidade (%)</label>
             <input class="inp" id="meta-conf" type="number" value="85" min="50" max="100">
-            <div class="fld-hint">Alerta quando o índice cair abaixo deste valor</div>
-          </div>
-          <div class="fld">
-            <label class="fld-lbl">Meta de custo per capita (R$)</label>
-            <input class="inp" id="meta-custo" type="number" value="9.00" step="0.50" min="0">
-            <div class="fld-hint">Referência financeira da UAN</div>
+            <div class="fld-hint">Alerta automático quando o índice cair abaixo deste valor</div>
           </div>
           <div class="fld">
             <label class="fld-lbl">Periodicidade do relatório</label>
@@ -878,6 +873,69 @@ body {
               <option>Mensal</option>
             </select>
           </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">💰 CMV Almejado por Tipo de Refeição</div>
+        <div style="padding:12px 14px;background:var(--verde-p);border-radius:10px;border-left:3px solid var(--verde-l);margin-bottom:14px;font-size:12px;color:var(--verde-m);line-height:1.6">
+          <strong>CMV</strong> = Custo da Mercadoria Vendida · Percentual do custo de insumos sobre o preço de venda ou sobre a meta orçamentária. Informe apenas as refeições que esta UAN oferece.
+        </div>
+        <div class="fld-grid c3">
+          <div class="fld">
+            <label class="fld-lbl">☕ Café da manhã</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-cafe" type="number" placeholder="Ex: 28" min="0" max="100" step="0.5" style="padding-right:36px">
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Deixe em branco se não oferece</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">🍽️ Almoço</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-almoco" type="number" placeholder="Ex: 32" min="0" max="100" step="0.5" style="padding-right:36px">
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Deixe em branco se não oferece</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">🌙 Jantar</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-jantar" type="number" placeholder="Ex: 30" min="0" max="100" step="0.5" style="padding-right:36px">
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Deixe em branco se não oferece</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">🥗 Lanche / Colação</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-lanche" type="number" placeholder="Ex: 25" min="0" max="100" step="0.5" style="padding-right:36px">
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Deixe em branco se não oferece</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">🛏️ Ceia</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-ceia" type="number" placeholder="Ex: 22" min="0" max="100" step="0.5" style="padding-right:36px">
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Aplicável para UANs hospitalares</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">📊 CMV Médio Geral</label>
+            <div style="position:relative">
+              <input class="inp" id="cmv-geral" type="number" placeholder="Calculado automaticamente" min="0" max="100" step="0.5" style="padding-right:36px;background:var(--areia)" readonly>
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--tinta-4);pointer-events:none">%</span>
+            </div>
+            <div class="fld-hint">Média das refeições informadas</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">⚙️ Sistema</div>
+        <div class="fld-grid c2">
           <div class="fld">
             <label class="fld-lbl">Frequência de backup</label>
             <select class="sel" id="freq-backup">
@@ -885,6 +943,12 @@ body {
               <option selected>Semanal</option>
               <option>Manual</option>
             </select>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Meta de conformidade padrão</label>
+            <div style="padding:10px 12px;background:var(--areia);border-radius:8px;border:1px solid var(--border);font-size:13px;color:var(--tinta-3)">
+              <span id="meta-conf-display">85%</span> — ajustável pós-cadastro
+            </div>
           </div>
         </div>
       </div>
@@ -1270,7 +1334,15 @@ function preencherRevisao() {
   document.getElementById('rv-rt-nome').textContent    = v('rt-nome');
   document.getElementById('rv-rt-crn').textContent     = v('rt-crn');
   document.getElementById('rv-meta-conf').textContent  = v('meta-conf') + '%';
-  document.getElementById('rv-meta-custo').textContent = 'R$ ' + v('meta-custo');
+  // CMV por refeição
+  const cmvs = ['cafe','almoco','jantar','lanche','ceia'].map(t => {
+    const val = parseFloat(document.getElementById('cmv-'+t)?.value);
+    return isNaN(val) ? null : val;
+  }).filter(v => v !== null);
+  const cmvGeral = cmvs.length ? (cmvs.reduce((a,b)=>a+b,0)/cmvs.length).toFixed(1) : '—';
+  document.getElementById('rv-meta-custo').textContent = cmvs.length
+    ? `CMV médio: ${cmvGeral}% (${cmvs.length} refeições)`
+    : 'Nenhum CMV informado';
 }
 
 function formatarData(d) {
@@ -1318,7 +1390,13 @@ async function salvarUAN() {
     telefone:      document.getElementById('telefone').value.trim(),
     ativo:         true,
     meta_conformidade:  parseFloat(document.getElementById('meta-conf').value) || 85,
-    meta_custo_per_cap: parseFloat(document.getElementById('meta-custo').value) || 9,
+    meta_custo_per_cap: (() => {
+      const cmvs = ['cafe','almoco','jantar','lanche','ceia'].map(t => {
+        const val = parseFloat(document.getElementById('cmv-'+t)?.value);
+        return isNaN(val) ? null : val;
+      }).filter(v => v !== null);
+      return cmvs.length ? (cmvs.reduce((a,b)=>a+b,0)/cmvs.length) : 0;
+    })(),
   };
 
   // Metadados extras (salvar em JSON separado se necessário)
@@ -1466,6 +1544,24 @@ function showToast(msg) {
 renderStepsNav();
 atualizarProgresso();
 verificarSessao();
+
+// Cálculo automático do CMV médio
+['cmv-cafe','cmv-almoco','cmv-jantar','cmv-lanche','cmv-ceia'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => {
+    const cmvs = ['cafe','almoco','jantar','lanche','ceia']
+      .map(t => parseFloat(document.getElementById('cmv-'+t)?.value))
+      .filter(v => !isNaN(v) && v > 0);
+    const geralEl = document.getElementById('cmv-geral');
+    if (geralEl) {
+      geralEl.value = cmvs.length ? (cmvs.reduce((a,b)=>a+b,0)/cmvs.length).toFixed(1) : '';
+      geralEl.placeholder = cmvs.length ? '' : 'Calculado automaticamente';
+    }
+    const confEl = document.getElementById('meta-conf');
+    const displayEl = document.getElementById('meta-conf-display');
+    if (displayEl && confEl) displayEl.textContent = confEl.value + '%';
+  });
+});
 </script>
 </body>
 </html>
