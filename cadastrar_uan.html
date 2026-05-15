@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriConsult Pro — Cadastrar Nova UAN</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  /* Paleta clínica: Verde profundo + Areia + Branco */
+  --verde:     #0A3622;
+  --verde-m:   #145A38;
+  --verde-b:   #1E8A52;
+  --verde-l:   #4DBF80;
+  --verde-xl:  #A8E6C0;
+  --verde-p:   #EBF8F1;
+  --verde-px:  #F5FCF8;
+
+  --areia:     #F7F3EE;
+  --areia-m:   #EDE7DE;
+  --areia-e:   #D4C8B8;
+
+  --tinta:     #0F0F0D;
+  --tinta-2:   #262620;
+  --tinta-3:   #4A4A42;
+  --tinta-4:   #7A7A70;
+  --tinta-5:   #AEAE A4;
+  --tinta-6:   #D4D4CC;
+
+  --branco:    #FFFFFF;
+  --fundo:     #F4F1EC;
+
+  --ouro:      #8A6A00;
+  --ouro-m:    #C49A00;
+  --ouro-l:    #F5CC3A;
+  --ouro-p:    #FDF8E1;
+
+  --erro:      #8B1A1A;
+  --erro-l:    #FDEAEA;
+  --ok:        #0A5C2A;
+  --ok-l:      #E8F7EE;
+
+  --border:    #E0DAD0;
+  --shadow:    0 2px 12px rgba(15,15,13,.07);
+  --shadow-lg: 0 8px 40px rgba(15,15,13,.12);
+  --shadow-xl: 0 20px 80px rgba(15,15,13,.16);
+
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+
+  --font-sans:  'Instrument Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono:  'JetBrains Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-sans);
+  background: var(--fundo);
+  color: var(--tinta);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: 100vh;
+}
+
+/* ── PAINEL ESQUERDO — PROGRESSO ── */
+.left-panel {
+  background: var(--verde);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.lp-header {
+  padding: 32px 32px 28px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.lp-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 28px;
+}
+.lp-mark {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--verde-b), var(--verde-l));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 3px 10px rgba(30,138,82,.4);
+}
+.lp-name { font-size: 13px; font-weight: 700; color: #fff; }
+.lp-ver  { font-size: 9px; color: rgba(255,255,255,.3); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+
+.lp-title {
+  font-family: var(--font-serif);
+  font-size: 28px; font-style: italic; color: #fff;
+  line-height: 1.2; margin-bottom: 6px;
+}
+.lp-sub { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+
+/* Steps no painel esquerdo */
+.steps-nav { padding: 28px 32px; flex: 1; overflow-y: auto; }
+
+.step-nav-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+}
+.step-nav-item:last-child { border-bottom: none; }
+.step-nav-item:hover .sni-label { color: rgba(255,255,255,.9); }
+
+.sni-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+  font-family: var(--font-mono);
+  border: 1.5px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.35);
+  background: transparent;
+  transition: all .25s;
+  margin-top: 1px;
+}
+.step-nav-item.done .sni-num {
+  background: var(--verde-b); border-color: var(--verde-b);
+  color: #fff; font-size: 13px;
+}
+.step-nav-item.active .sni-num {
+  background: #fff; border-color: #fff;
+  color: var(--verde); font-weight: 800;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.12);
+}
+
+.sni-info { flex: 1; }
+.sni-label {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,.38);
+  transition: color .2s;
+}
+.step-nav-item.done   .sni-label { color: rgba(255,255,255,.6); }
+.step-nav-item.active .sni-label { color: #fff; }
+.sni-desc { font-size: 11px; color: rgba(255,255,255,.22); margin-top: 2px; }
+.step-nav-item.active .sni-desc { color: rgba(255,255,255,.4); }
+
+/* Barra de progresso */
+.lp-progress {
+  padding: 24px 32px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.lp-prog-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; margin-bottom: 8px;
+}
+.lp-prog-label span:first-child { color: rgba(255,255,255,.4); }
+.lp-prog-label span:last-child  { color: var(--verde-l); font-family: var(--font-mono); font-weight: 600; }
+.lp-prog-track {
+  height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden;
+}
+.lp-prog-fill {
+  height: 100%; background: linear-gradient(90deg, var(--verde-l), var(--ouro-l));
+  border-radius: 2px;
+  transition: width .5s cubic-bezier(.34,1.2,.64,1);
+}
+
+/* ── PAINEL DIREITO — FORMULÁRIO ── */
+.right-panel {
+  overflow-y: auto;
+  padding: 48px 56px;
+  display: flex; flex-direction: column;
+}
+
+/* Steps */
+.step { display: none; }
+.step.active {
+  display: flex; flex-direction: column; gap: 0;
+  animation: stepIn .3s ease both;
+}
+@keyframes stepIn {
+  from { opacity:0; transform: translateX(16px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+
+.step-header { margin-bottom: 36px; }
+.step-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 600;
+  color: var(--verde-b); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.step-eyebrow::before {
+  content: ''; width: 16px; height: 1.5px;
+  background: var(--verde-b);
+}
+.step-title {
+  font-family: var(--font-serif);
+  font-size: 34px; color: var(--tinta);
+  line-height: 1.1; margin-bottom: 8px;
+  letter-spacing: -.3px;
+}
+.step-desc { font-size: 14px; color: var(--tinta-4); line-height: 1.7; }
+
+/* Seções de campos */
+.form-section { margin-bottom: 32px; }
+.fs-title {
+  font-size: 11px; font-weight: 700;
+  color: var(--tinta-4); text-transform: uppercase;
+  letter-spacing: 1.2px; margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* Grid de campos */
+.fld-grid { display: grid; gap: 14px; }
+.fld-grid.c2 { grid-template-columns: 1fr 1fr; }
+.fld-grid.c3 { grid-template-columns: 1fr 1fr 1fr; }
+.fld-grid.c2-1 { grid-template-columns: 2fr 1fr; }
+.fld-full { grid-column: 1 / -1; }
+
+/* Campo */
+.fld { display: flex; flex-direction: column; gap: 5px; }
+.fld-lbl {
+  font-size: 11px; font-weight: 700;
+  color: var(--tinta-3); text-transform: uppercase; letter-spacing: .7px;
+}
+.fld-lbl .req { color: var(--erro); margin-left: 2px; }
+.fld-hint { font-size: 11px; color: var(--tinta-5); margin-top: 2px; }
+.fld-ok   { font-size: 11px; color: var(--ok); margin-top: 2px; }
+.fld-err  { font-size: 11px; color: var(--erro); margin-top: 2px; display: none; }
+.fld-err.show { display: block; }
+
+.inp, .sel, .area {
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font-sans);
+  font-size: 13.5px; color: var(--tinta);
+  background: var(--branco); outline: none;
+  transition: all .15s; width: 100%;
+}
+.inp:focus, .sel:focus, .area:focus {
+  border-color: var(--verde-b);
+  box-shadow: 0 0 0 3px rgba(30,138,82,.1);
+}
+.inp::placeholder { color: var(--tinta-5); }
+.inp.err { border-color: var(--erro); }
+.inp.ok  { border-color: var(--verde-b); background: var(--verde-px); }
+.sel { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A4A42' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.area { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* CEP com busca automática */
+.cep-wrap { position: relative; }
+.cep-wrap .inp { padding-right: 44px; }
+.cep-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; font-size: 15px;
+  color: var(--tinta-4); transition: color .12s; padding: 4px;
+}
+.cep-btn:hover { color: var(--verde-b); }
+.cep-loading { animation: spin .6s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+/* Cards de seleção */
+.sel-cards { display: grid; gap: 10px; }
+.sel-cards.c3 { grid-template-columns: repeat(3,1fr); }
+.sel-cards.c2 { grid-template-columns: repeat(2,1fr); }
+
+.sel-card {
+  padding: 16px; border-radius: var(--r-lg);
+  border: 1.5px solid var(--border);
+  cursor: pointer; transition: all .18s;
+  background: var(--branco);
+  display: flex; flex-direction: column; gap: 8px;
+  position: relative;
+}
+.sel-card:hover { border-color: var(--verde-b); background: var(--verde-px); transform: translateY(-2px); box-shadow: var(--shadow); }
+.sel-card.selected { border-color: var(--verde-b); background: var(--verde-p); box-shadow: 0 0 0 3px rgba(30,138,82,.1); }
+.sel-card .sc-check {
+  position: absolute; top: 12px; right: 12px;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: all .15s;
+}
+.sel-card.selected .sc-check { background: var(--verde-b); border-color: var(--verde-b); color: #fff; }
+.sc-ico { font-size: 26px; }
+.sc-name { font-size: 13px; font-weight: 700; color: var(--tinta); }
+.sc-desc { font-size: 11px; color: var(--tinta-4); line-height: 1.4; }
+
+/* Toggles */
+.toggle-list { display: flex; flex-direction: column; gap: 9px; }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-radius: var(--r-md);
+  background: var(--areia); border: 1px solid var(--border);
+  transition: background .15s;
+}
+.toggle-row:hover { background: var(--areia-m); }
+.tr-info { flex: 1; }
+.tr-name { font-size: 13px; font-weight: 600; color: var(--tinta); }
+.tr-desc { font-size: 11px; color: var(--tinta-4); margin-top: 1px; }
+.toggle {
+  width: 42px; height: 22px; border-radius: 11px;
+  background: var(--tinta-6); position: relative;
+  cursor: pointer; transition: background .18s; border: none; flex-shrink: 0;
+}
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: transform .18s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.toggle.on { background: var(--verde-b); }
+.toggle.on::after { transform: translateX(20px); }
+
+/* Navegação dos steps */
+.step-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.step-nav-left { display: flex; gap: 8px; }
+
+/* Botões */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px 22px; border-radius: var(--r-md);
+  font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .15s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--verde-m); color: #fff;
+  box-shadow: 0 2px 8px rgba(20,90,56,.3);
+}
+.btn-primary:hover { background: var(--verde); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(20,90,56,.35); }
+.btn-primary:disabled { background: var(--tinta-6); color: var(--tinta-4); box-shadow: none; transform: none; cursor: not-allowed; }
+.btn-outline { background: var(--branco); color: var(--verde-m); border: 1.5px solid var(--verde-xl); }
+.btn-outline:hover { background: var(--verde-p); }
+.btn-ghost  { background: var(--areia); color: var(--tinta-3); }
+.btn-ghost:hover { background: var(--areia-m); }
+.btn-ouro   { background: var(--ouro-m); color: #fff; box-shadow: 0 2px 8px rgba(196,154,0,.3); }
+.btn-ouro:hover { background: var(--ouro); transform: translateY(-1px); }
+.btn-lg { padding: 14px 28px; font-size: 14px; border-radius: var(--r-lg); }
+
+/* Spinner */
+.spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+
+/* Card de revisão */
+.review-card {
+  background: var(--branco); border-radius: var(--r-lg);
+  border: 1px solid var(--border); overflow: hidden;
+  margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.rc-head {
+  padding: 13px 18px; background: var(--areia);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.rc-title { font-size: 13px; font-weight: 700; color: var(--tinta); display: flex; align-items: center; gap: 7px; }
+.rc-edit  { font-size: 12px; font-weight: 600; color: var(--verde-m); cursor: pointer; background: none; border: none; font-family: var(--font-sans); }
+.rc-edit:hover { text-decoration: underline; }
+.rc-body { padding: 16px 18px; }
+.rc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.rc-item { }
+.rc-lbl { font-size: 10px; color: var(--tinta-4); text-transform: uppercase; letter-spacing: .7px; font-weight: 700; }
+.rc-val { font-size: 13px; color: var(--tinta); margin-top: 2px; font-weight: 500; }
+.rc-val.empty { color: var(--tinta-5); font-style: italic; }
+
+/* Tela de sucesso */
+.success-screen {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 48px 0;
+}
+.success-ring {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: var(--verde-p); border: 3px solid var(--verde-xl);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; margin-bottom: 24px;
+  animation: ringPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes ringPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.success-title {
+  font-family: var(--font-serif);
+  font-size: 36px; color: var(--tinta); margin-bottom: 10px;
+}
+.success-sub { font-size: 14px; color: var(--tinta-4); line-height: 1.7; max-width: 460px; margin-bottom: 32px; }
+.success-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 32px;
+}
+.sc-chip {
+  padding: 7px 14px; border-radius: 30px;
+  background: var(--verde-p); border: 1px solid var(--verde-xl);
+  font-size: 12px; color: var(--verde-m); font-weight: 600;
+}
+.next-steps {
+  background: var(--areia); border-radius: var(--r-lg);
+  padding: 20px 24px; width: 100%; text-align: left; margin-bottom: 28px;
+}
+.ns-title { font-size: 12px; font-weight: 700; color: var(--tinta-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.ns-list  { display: flex; flex-direction: column; gap: 8px; }
+.ns-item  { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tinta-2); }
+.ns-num   { font-family: var(--font-mono); font-size: 10px; color: var(--verde-b); font-weight: 600; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  background: var(--tinta); color: #fff;
+  padding: 12px 20px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  display: flex; align-items: center; gap: 9px;
+  transform: translateY(70px); opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  max-width: 380px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Alerta informativo */
+.info-box {
+  padding: 13px 16px; border-radius: var(--r-md);
+  display: flex; gap: 10px; font-size: 12px; line-height: 1.6;
+  margin-bottom: 16px;
+}
+.info-box.verde { background: var(--verde-p); border-left: 3px solid var(--verde-b); color: var(--verde); }
+.info-box.ouro  { background: var(--ouro-p);  border-left: 3px solid var(--ouro-l);  color: var(--ouro); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-panel { position: relative; height: auto; }
+  .steps-nav  { display: none; }
+  .right-panel { padding: 24px 20px; }
+  .fld-grid.c2, .fld-grid.c3, .fld-grid.c2-1 { grid-template-columns: 1fr; }
+  .sel-cards.c3, .sel-cards.c2 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── PAINEL ESQUERDO ── -->
+  <div class="left-panel">
+    <div class="lp-header">
+      <div class="lp-logo">
+        <div class="lp-mark">🥗</div>
+        <div>
+          <div class="lp-name">NutriConsult Pro</div>
+          <div class="lp-ver">Nova UAN</div>
+        </div>
+      </div>
+      <div class="lp-title">Cadastro de<br>nova unidade</div>
+      <div class="lp-sub">Preencha as informações da UAN passo a passo. Você pode voltar e editar qualquer etapa.</div>
+    </div>
+
+    <div class="steps-nav" id="steps-nav">
+      <!-- Gerado por JS -->
+    </div>
+
+    <div class="lp-progress">
+      <div class="lp-prog-label">
+        <span>Progresso</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="lp-prog-track">
+        <div class="lp-prog-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAINEL DIREITO ── -->
+  <div class="right-panel" id="right-panel">
+
+    <!-- ══ STEP 1: Identificação ══ -->
+    <div class="step active" id="step-1">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 1 de 6 · Identificação</div>
+        <h1 class="step-title">Dados do<br>estabelecimento</h1>
+        <p class="step-desc">Informações que aparecerão em todos os documentos regulatórios gerados pelo sistema.</p>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">🏢 Razão Social e Registro</div>
+        <div class="fld-grid">
+          <div class="fld fld-full">
+            <label class="fld-lbl">Razão Social <span class="req">*</span></label>
+            <input class="inp" id="razao-social" placeholder="Ex: Restaurante Corporativo Alfa Ltda." oninput="validarCampo(this)">
+            <div class="fld-err" id="err-razao">Campo obrigatório.</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Nome Fantasia <span class="req">*</span></label>
+            <input class="inp" id="nome-fantasia" placeholder="Ex: Rest. Corporativo Alfa" oninput="validarCampo(this);atualizarPreview()">
+            <div class="fld-err" id="err-fantasia">Campo obrigatório.</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">CNPJ <span class="req">*</span></label>
+            <input class="inp" id="cnpj" placeholder="00.000.000/0001-00" maxlength="18" oninput="mascaraCNPJ(this);validarCNPJ(this)">
+            <div class="fld-err" id="err-cnpj">CNPJ inválido.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">📋 Licenças e Documentação</div>
+        <div class="fld-grid c3">
+          <div class="fld">
+            <label class="fld-lbl">Alvará Sanitário Nº</label>
+            <input class="inp" id="alvara-num" placeholder="Nº do alvará">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Validade do Alvará</label>
+            <input class="inp" id="alvara-val" type="date">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Inscrição Estadual</label>
+            <input class="inp" id="insc-estadual" placeholder="Ex: 123.456.789.000">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">📞 Contato</div>
+        <div class="fld-grid c2">
+          <div class="fld">
+            <label class="fld-lbl">Telefone</label>
+            <input class="inp" id="telefone" placeholder="(00) 0000-0000" oninput="mascaraTelefone(this)">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">E-mail da UAN</label>
+            <input class="inp" id="email-uan" type="email" placeholder="contato@empresa.com">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <a href="NutriConsult_v3_Online.html" class="btn btn-ghost">← Voltar ao sistema</a>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="irPara(2)">
+          Próximo: Endereço →
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 2: Endereço ══ -->
+    <div class="step" id="step-2">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 2 de 6 · Localização</div>
+        <h1 class="step-title">Endereço<br>da unidade</h1>
+        <p class="step-desc">O CEP preenche o endereço automaticamente via ViaCEP.</p>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">📍 Localização</div>
+        <div class="fld-grid">
+          <div class="fld">
+            <label class="fld-lbl">CEP <span class="req">*</span></label>
+            <div class="cep-wrap">
+              <input class="inp" id="cep" placeholder="00000-000" maxlength="9" oninput="mascaraCEP(this)">
+              <button class="cep-btn" onclick="buscarCEP()" title="Buscar CEP">🔍</button>
+            </div>
+            <div class="fld-hint" id="cep-hint">Digite o CEP para preenchimento automático</div>
+            <div class="fld-err" id="err-cep">CEP não encontrado.</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Número</label>
+            <input class="inp" id="numero" placeholder="Ex: 1420">
+          </div>
+          <div class="fld fld-full">
+            <label class="fld-lbl">Logradouro <span class="req">*</span></label>
+            <input class="inp" id="logradouro" placeholder="Rua, Avenida, Alameda...">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Complemento</label>
+            <input class="inp" id="complemento" placeholder="Bloco, sala, andar...">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Bairro <span class="req">*</span></label>
+            <input class="inp" id="bairro" placeholder="Bairro">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Cidade <span class="req">*</span></label>
+            <input class="inp" id="cidade" placeholder="Cidade" oninput="atualizarPreview()">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Estado <span class="req">*</span></label>
+            <select class="sel" id="estado" onchange="atualizarPreview()">
+              <option value="">Selecione...</option>
+              <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+              <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+              <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+              <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+              <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+              <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+              <option>SP</option><option>SE</option><option>TO</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview da UAN -->
+      <div style="padding:16px 20px;background:var(--verde);border-radius:var(--r-lg);margin-bottom:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(77,191,128,.15)"></div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">Pré-visualização</div>
+        <div style="font-family:var(--font-serif);font-size:20px;color:#fff;margin-bottom:3px" id="preview-nome">—</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5)" id="preview-loc">—</div>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <button class="btn btn-ghost" onclick="irPara(1)">← Anterior</button>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="irPara(3)">
+          Próximo: Tipo e Capacidade →
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 3: Tipo e Estrutura ══ -->
+    <div class="step" id="step-3">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 3 de 6 · Estrutura</div>
+        <h1 class="step-title">Tipo e<br>capacidade</h1>
+        <p class="step-desc">Define os modelos de POPs e checklist que serão gerados automaticamente para esta UAN.</p>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">🏢 Tipo de UAN</div>
+        <div class="sel-cards c3" id="tipo-uan-cards">
+          <div class="sel-card selected" onclick="selectCard(this,'tipo-uan-cards')" data-val="corporativo">
+            <div class="sc-check">✓</div>
+            <div class="sc-ico">🏢</div>
+            <div class="sc-name">Corporativo</div>
+            <div class="sc-desc">Empresa, indústria ou instituição</div>
+          </div>
+          <div class="sel-card" onclick="selectCard(this,'tipo-uan-cards')" data-val="hospitalar">
+            <div class="sc-check"></div>
+            <div class="sc-ico">🏥</div>
+            <div class="sc-name">Hospitalar</div>
+            <div class="sc-desc">Hospital, clínica ou unidade de saúde</div>
+          </div>
+          <div class="sel-card" onclick="selectCard(this,'tipo-uan-cards')" data-val="escolar">
+            <div class="sc-check"></div>
+            <div class="sc-ico">🏫</div>
+            <div class="sc-name">Escolar</div>
+            <div class="sc-desc">Escola, creche ou universidade</div>
+          </div>
+          <div class="sel-card" onclick="selectCard(this,'tipo-uan-cards')" data-val="campo">
+            <div class="sc-check"></div>
+            <div class="sc-ico">👷</div>
+            <div class="sc-name">Canteiro / Campo</div>
+            <div class="sc-desc">Obras e locais remotos</div>
+          </div>
+          <div class="sel-card" onclick="selectCard(this,'tipo-uan-cards')" data-val="popular">
+            <div class="sc-check"></div>
+            <div class="sc-ico">🍽️</div>
+            <div class="sc-name">Popular / Social</div>
+            <div class="sc-desc">Restaurante popular ou serviço público</div>
+          </div>
+          <div class="sel-card" onclick="selectCard(this,'tipo-uan-cards')" data-val="catering">
+            <div class="sc-check"></div>
+            <div class="sc-ico">📦</div>
+            <div class="sc-name">Catering / Industrial</div>
+            <div class="sc-desc">Produção em larga escala</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">📊 Capacidade e Funcionamento</div>
+        <div class="fld-grid c2">
+          <div class="fld">
+            <label class="fld-lbl">Refeições por dia <span class="req">*</span></label>
+            <input class="inp" id="ref-dia" type="number" placeholder="Ex: 500" min="1">
+            <div class="fld-hint">Média diária de refeições servidas</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Nº de colaboradores</label>
+            <input class="inp" id="n-colab" type="number" placeholder="Ex: 12" min="1">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Área total (m²)</label>
+            <input class="inp" id="area-m2" type="number" placeholder="Ex: 280" min="1">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Tipos de refeição</label>
+            <select class="sel" id="tipos-ref">
+              <option>Almoço</option>
+              <option>Café + Almoço</option>
+              <option selected>Café + Almoço + Jantar</option>
+              <option>4 refeições</option>
+              <option>Dieta hospitalar completa</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Horário de abertura</label>
+            <input class="inp" id="hr-abertura" type="time" value="06:00">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Horário de encerramento</label>
+            <input class="inp" id="hr-fechamento" type="time" value="18:00">
+          </div>
+          <div class="fld fld-full">
+            <label class="fld-lbl">Dias de funcionamento</label>
+            <select class="sel" id="dias-func">
+              <option>Segunda a sexta</option>
+              <option>Segunda a sábado</option>
+              <option selected>Todos os dias</option>
+              <option>Conforme escala</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <button class="btn btn-ghost" onclick="irPara(2)">← Anterior</button>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="irPara(4)">
+          Próximo: Equipamentos →
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 4: Equipamentos ══ -->
+    <div class="step" id="step-4">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 4 de 6 · Equipamentos</div>
+        <h1 class="step-title">Equipamentos<br>e instalações</h1>
+        <p class="step-desc">Ative os equipamentos presentes na UAN. Cada um gera checklist de temperatura e manutenção automaticamente.</p>
+      </div>
+
+      <div class="info-box verde">
+        <span>ℹ️</span>
+        <span>Os equipamentos ativados aqui aparecem automaticamente nos checklists diários de temperatura conforme a RDC 216/2004.</span>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">❄️ Refrigeração e Conservação</div>
+        <div class="toggle-list">
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Câmara fria de carnes</div><div class="tr-desc">Limite: ≤ 4°C · Monitoramento automático</div></div>
+            <button class="toggle on" id="eq-camara-carnes" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Câmara fria de vegetais</div><div class="tr-desc">Limite: ≤ 10°C · Monitoramento automático</div></div>
+            <button class="toggle on" id="eq-camara-veg" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Freezer / Congelados</div><div class="tr-desc">Limite: ≤ −18°C · Monitoramento automático</div></div>
+            <button class="toggle on" id="eq-freezer" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Geladeira de laticínios</div><div class="tr-desc">Limite: ≤ 7°C</div></div>
+            <button class="toggle" id="eq-gelad-latic" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">🔥 Cocção e Distribuição</div>
+        <div class="toggle-list">
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Balcão térmico de distribuição</div><div class="tr-desc">Limite: ≥ 60°C · Monitoramento automático</div></div>
+            <button class="toggle on" id="eq-balcao" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Pass-through / Estufa</div><div class="tr-desc">Manutenção de temperatura pós-cocção</div></div>
+            <button class="toggle" id="eq-passthrough" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Forno combinado</div><div class="tr-desc">Incluir no plano de manutenção preventiva</div></div>
+            <button class="toggle" id="eq-forno" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Fritadeira industrial</div><div class="tr-desc">Controle de óleo e temperatura</div></div>
+            <button class="toggle" id="eq-fritadeira" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">💧 Utilidades</div>
+        <div class="toggle-list">
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Caixa d'água / Reservatório</div><div class="tr-desc">POP 03 — Higienização semestral obrigatória</div></div>
+            <button class="toggle on" id="eq-reservatorio" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div class="tr-info"><div class="tr-name">Exaustores e coifas</div><div class="tr-desc">Manutenção trimestral dos filtros</div></div>
+            <button class="toggle" id="eq-exaustor" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <button class="btn btn-ghost" onclick="irPara(3)">← Anterior</button>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="irPara(5)">
+          Próximo: Responsável Técnico →
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 5: Responsável Técnico ══ -->
+    <div class="step" id="step-5">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 5 de 6 · Responsável</div>
+        <h1 class="step-title">Nutricionista<br>Responsável Técnico</h1>
+        <p class="step-desc">O RT assina todos os POPs, o Manual de Boas Práticas e os relatórios gerados. Aparece em todos os documentos da UAN.</p>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">👩‍⚕️ Dados do RT</div>
+        <div class="fld-grid c2">
+          <div class="fld fld-full">
+            <label class="fld-lbl">Nome completo <span class="req">*</span></label>
+            <input class="inp" id="rt-nome" placeholder="Nome e sobrenome" oninput="validarCampo(this)">
+            <div class="fld-err" id="err-rt-nome">Campo obrigatório.</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">CRN <span class="req">*</span></label>
+            <input class="inp" id="rt-crn" placeholder="Ex: CRN-3 12345" oninput="validarCampo(this)">
+            <div class="fld-hint">Conselho Regional de Nutricionistas</div>
+            <div class="fld-err" id="err-rt-crn">Campo obrigatório.</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">E-mail profissional</label>
+            <input class="inp" id="rt-email" type="email" placeholder="rt@consultoria.com">
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Telefone / WhatsApp</label>
+            <input class="inp" id="rt-tel" placeholder="(00) 99999-9999" oninput="mascaraTelefone(this)">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="fs-title">📋 Metas e Configurações</div>
+        <div class="fld-grid c2">
+          <div class="fld">
+            <label class="fld-lbl">Meta de conformidade (%)</label>
+            <input class="inp" id="meta-conf" type="number" value="85" min="50" max="100">
+            <div class="fld-hint">Alerta quando o índice cair abaixo deste valor</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Meta de custo per capita (R$)</label>
+            <input class="inp" id="meta-custo" type="number" value="9.00" step="0.50" min="0">
+            <div class="fld-hint">Referência financeira da UAN</div>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Periodicidade do relatório</label>
+            <select class="sel" id="period-relat">
+              <option selected>Quinzenal</option>
+              <option>Semanal</option>
+              <option>Mensal</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl">Frequência de backup</label>
+            <select class="sel" id="freq-backup">
+              <option>Diário</option>
+              <option selected>Semanal</option>
+              <option>Manual</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <button class="btn btn-ghost" onclick="irPara(4)">← Anterior</button>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="irPara(6)">
+          Revisar e confirmar →
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 6: Revisão e Confirmação ══ -->
+    <div class="step" id="step-6">
+      <div class="step-header">
+        <div class="step-eyebrow">Passo 6 de 6 · Confirmação</div>
+        <h1 class="step-title">Revise e<br>confirme</h1>
+        <p class="step-desc">Verifique os dados antes de salvar. Você pode editar qualquer seção clicando em "Editar".</p>
+      </div>
+
+      <!-- Cards de revisão -->
+      <div class="review-card">
+        <div class="rc-head">
+          <div class="rc-title">🏢 Identificação</div>
+          <button class="rc-edit" onclick="irPara(1)">Editar</button>
+        </div>
+        <div class="rc-body">
+          <div class="rc-grid">
+            <div class="rc-item"><div class="rc-lbl">Razão Social</div><div class="rc-val" id="rv-razao">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Nome Fantasia</div><div class="rc-val" id="rv-fantasia">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">CNPJ</div><div class="rc-val" id="rv-cnpj">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Alvará Sanitário</div><div class="rc-val" id="rv-alvara">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="rc-head">
+          <div class="rc-title">📍 Endereço</div>
+          <button class="rc-edit" onclick="irPara(2)">Editar</button>
+        </div>
+        <div class="rc-body">
+          <div class="rc-grid">
+            <div class="rc-item"><div class="rc-lbl">Logradouro</div><div class="rc-val" id="rv-rua">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Bairro · CEP</div><div class="rc-val" id="rv-bairro">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Cidade / Estado</div><div class="rc-val" id="rv-cidade">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="rc-head">
+          <div class="rc-title">🏗️ Estrutura e Capacidade</div>
+          <button class="rc-edit" onclick="irPara(3)">Editar</button>
+        </div>
+        <div class="rc-body">
+          <div class="rc-grid">
+            <div class="rc-item"><div class="rc-lbl">Tipo de UAN</div><div class="rc-val" id="rv-tipo">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Refeições / dia</div><div class="rc-val" id="rv-refeicoes">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Colaboradores</div><div class="rc-val" id="rv-colab">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Funcionamento</div><div class="rc-val" id="rv-func">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="rc-head">
+          <div class="rc-title">👩‍⚕️ Responsável Técnico</div>
+          <button class="rc-edit" onclick="irPara(5)">Editar</button>
+        </div>
+        <div class="rc-body">
+          <div class="rc-grid">
+            <div class="rc-item"><div class="rc-lbl">Nome RT</div><div class="rc-val" id="rv-rt-nome">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">CRN</div><div class="rc-val" id="rv-rt-crn">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Meta conformidade</div><div class="rc-val" id="rv-meta-conf">—</div></div>
+            <div class="rc-item"><div class="rc-lbl">Meta per capita</div><div class="rc-val" id="rv-meta-custo">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box ouro">
+        <span>⚡</span>
+        <span>Ao salvar, o sistema criará automaticamente os <strong>8 POPs obrigatórios</strong> (RDC 216/2004) e a estrutura do <strong>Manual de Boas Práticas</strong> com os dados desta UAN.</span>
+      </div>
+
+      <div class="step-nav">
+        <div class="step-nav-left">
+          <button class="btn btn-ghost" onclick="irPara(5)">← Anterior</button>
+        </div>
+        <button class="btn btn-ouro btn-lg" id="btn-salvar" onclick="salvarUAN()">
+          <span id="salvar-txt">🚀 Cadastrar UAN</span>
+          <div class="spinner" id="salvar-spin" style="display:none"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 7: Sucesso ══ -->
+    <div class="step" id="step-7">
+      <div class="success-screen">
+        <div class="success-ring">🎉</div>
+        <h1 class="success-title">UAN cadastrada!</h1>
+        <p class="success-sub" id="success-msg">
+          A unidade foi configurada com sucesso. Os documentos regulatórios foram gerados com os dados informados.
+        </p>
+
+        <div class="success-chips">
+          <div class="sc-chip">✅ 8 POPs gerados</div>
+          <div class="sc-chip">📋 MBP estruturado</div>
+          <div class="sc-chip">🌡️ Checklists configurados</div>
+          <div class="sc-chip">📊 Dashboard ativo</div>
+        </div>
+
+        <div class="next-steps">
+          <div class="ns-title">Próximos passos recomendados</div>
+          <div class="ns-list">
+            <div class="ns-item"><span class="ns-num">01</span> Adicionar os membros da equipe desta UAN</div>
+            <div class="ns-item"><span class="ns-num">02</span> Revisar e assinar os 8 POPs gerados automaticamente</div>
+            <div class="ns-item"><span class="ns-num">03</span> Preencher as seções do Manual de Boas Práticas</div>
+            <div class="ns-item"><span class="ns-num">04</span> Cadastrar as fichas técnicas do cardápio inicial</div>
+            <div class="ns-item"><span class="ns-num">05</span> Realizar o primeiro checklist diário com a equipe</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn-ghost btn-lg" onclick="cadastrarOutra()">+ Cadastrar outra UAN</button>
+          <a href="NutriConsult_v3_Online.html" class="btn btn-primary btn-lg">Ir para o sistema →</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /right-panel -->
+</div><!-- /layout -->
+
+<div class="toast" id="toast"><span id="toast-msg">✅ Pronto!</span></div>
+
+<script>
+// ══════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════
+const SUPABASE_URL = 'https://bifinsgubmxuabfkqzho.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZmluc2d1Ym14dWFiZmtxemhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MTc0NDksImV4cCI6MjA5NDI5MzQ0OX0.TH7geq_P8B52nIAVSKqt2_0oA55BBiupttTOxEl7MP8';
+
+let db = null;
+let currentUser = null;
+
+try {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  console.log('✅ Supabase conectado');
+} catch(e) {
+  console.log('⚠️ Supabase não disponível:', e.message);
+}
+
+// Verifica sessão ao carregar
+async function verificarSessao() {
+  if (!db) return;
+  const { data } = await db.auth.getSession();
+  if (data?.session?.user) {
+    currentUser = data.session.user;
+    console.log('✅ Usuário logado:', currentUser.email);
+  } else {
+    console.log('ℹ️ Sem sessão — modo demo ativo');
+  }
+}
+
+// ══════════════════════════════════════
+// CONFIGURAÇÃO DOS STEPS
+// ══════════════════════════════════════
+const STEPS = [
+  { n:1, label:'Identificação',    desc:'Razão social, CNPJ e contato' },
+  { n:2, label:'Endereço',         desc:'Localização da unidade' },
+  { n:3, label:'Tipo e Capacidade',desc:'Perfil operacional' },
+  { n:4, label:'Equipamentos',     desc:'Infraestrutura disponível' },
+  { n:5, label:'Resp. Técnico',    desc:'Nutricionista RT e metas' },
+  { n:6, label:'Confirmação',      desc:'Revisão e cadastro' },
+];
+
+let currentStep = 1;
+const totalSteps = 6;
+
+function renderStepsNav() {
+  const nav = document.getElementById('steps-nav');
+  nav.innerHTML = STEPS.map(s => `
+    <div class="step-nav-item ${s.n < currentStep ? 'done' : s.n === currentStep ? 'active' : ''}"
+         onclick="irPara(${s.n})">
+      <div class="sni-num">${s.n < currentStep ? '✓' : s.n}</div>
+      <div class="sni-info">
+        <div class="sni-label">${s.label}</div>
+        <div class="sni-desc">${s.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function atualizarProgresso() {
+  const pct = Math.round(((currentStep - 1) / totalSteps) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent  = pct + '%';
+}
+
+// ══════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════
+function irPara(n) {
+  if (n < 1 || n > 7) return;
+
+  // Esconde step atual
+  document.getElementById('step-' + currentStep)?.classList.remove('active');
+
+  // Mostra novo step
+  const el = document.getElementById('step-' + n);
+  if (!el) return;
+  el.classList.add('active');
+
+  // Se indo para revisão, preenche os dados
+  if (n === 6) preencherRevisao();
+
+  currentStep = n;
+  renderStepsNav();
+  atualizarProgresso();
+
+  // Scroll ao topo do painel direito
+  document.getElementById('right-panel').scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ══════════════════════════════════════
+// VALIDAÇÃO
+// ══════════════════════════════════════
+function validarCampo(input) {
+  const err = document.getElementById('err-' + input.id);
+  if (input.value.trim()) {
+    input.classList.remove('err');
+    input.classList.add('ok');
+    if (err) err.classList.remove('show');
+  } else {
+    input.classList.remove('ok');
+  }
+}
+
+function validarCNPJ(input) {
+  const v = input.value.replace(/\D/g,'');
+  if (v.length === 14) {
+    input.classList.add('ok');
+    input.classList.remove('err');
+    document.getElementById('err-cnpj')?.classList.remove('show');
+  } else if (v.length > 0) {
+    input.classList.remove('ok');
+  }
+}
+
+// ══════════════════════════════════════
+// MÁSCARAS
+// ══════════════════════════════════════
+function mascaraCNPJ(inp) {
+  let v = inp.value.replace(/\D/g,'').substring(0,14);
+  if (v.length > 12) v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,'$1.$2.$3/$4-$5');
+  else if (v.length > 8) v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/,'$1.$2.$3/$4');
+  else if (v.length > 5) v = v.replace(/^(\d{2})(\d{3})(\d+)$/,'$1.$2.$3');
+  else if (v.length > 2) v = v.replace(/^(\d{2})(\d+)$/,'$1.$2');
+  inp.value = v;
+}
+
+function mascaraCEP(inp) {
+  let v = inp.value.replace(/\D/g,'').substring(0,8);
+  if (v.length > 5) v = v.replace(/^(\d{5})(\d+)$/,'$1-$2');
+  inp.value = v;
+  if (v.replace('-','').length === 8) buscarCEP();
+}
+
+function mascaraTelefone(inp) {
+  let v = inp.value.replace(/\D/g,'').substring(0,11);
+  if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})$/,'($1) $2-$3');
+  else if (v.length > 6) v = v.replace(/^(\d{2})(\d{4})(\d+)$/,'($1) $2-$3');
+  else if (v.length > 2) v = v.replace(/^(\d{2})(\d+)$/,'($1) $2');
+  inp.value = v;
+}
+
+// ══════════════════════════════════════
+// BUSCA CEP (ViaCEP)
+// ══════════════════════════════════════
+async function buscarCEP() {
+  const cep = document.getElementById('cep').value.replace(/\D/g,'');
+  if (cep.length !== 8) return;
+
+  const btn = document.querySelector('.cep-btn');
+  const hint = document.getElementById('cep-hint');
+  const err  = document.getElementById('err-cep');
+
+  btn.textContent = '⟳';
+  btn.classList.add('cep-loading');
+  hint.textContent = 'Buscando...';
+  err.classList.remove('show');
+
+  try {
+    const res  = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await res.json();
+
+    if (data.erro) {
+      err.classList.add('show');
+      hint.textContent = '';
+    } else {
+      document.getElementById('logradouro').value = data.logradouro || '';
+      document.getElementById('bairro').value     = data.bairro     || '';
+      document.getElementById('cidade').value     = data.localidade || '';
+      document.getElementById('estado').value     = data.uf         || '';
+
+      // Marca campos como OK
+      ['logradouro','bairro','cidade','estado'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.value) { el.classList.add('ok'); el.classList.remove('err'); }
+      });
+
+      hint.textContent = '✅ Endereço preenchido automaticamente';
+      atualizarPreview();
+    }
+  } catch(e) {
+    hint.textContent = 'Erro ao buscar CEP. Preencha manualmente.';
+  } finally {
+    btn.textContent = '🔍';
+    btn.classList.remove('cep-loading');
+  }
+}
+
+// ══════════════════════════════════════
+// PREVIEW DA UAN
+// ══════════════════════════════════════
+function atualizarPreview() {
+  const nome   = document.getElementById('nome-fantasia')?.value || '—';
+  const cidade = document.getElementById('cidade')?.value || '';
+  const estado = document.getElementById('estado')?.value || '';
+  document.getElementById('preview-nome').textContent = nome || '—';
+  document.getElementById('preview-loc').textContent  = cidade && estado ? cidade + ', ' + estado : cidade || estado || '—';
+}
+
+// ══════════════════════════════════════
+// SELEÇÃO DE CARDS
+// ══════════════════════════════════════
+function selectCard(card, groupId) {
+  const group = document.getElementById(groupId);
+  if (!group) return;
+  group.querySelectorAll('.sel-card').forEach(c => {
+    c.classList.remove('selected');
+    c.querySelector('.sc-check').textContent = '';
+  });
+  card.classList.add('selected');
+  card.querySelector('.sc-check').textContent = '✓';
+}
+
+function getSelectedCard(groupId) {
+  const group = document.getElementById(groupId);
+  const sel = group?.querySelector('.sel-card.selected');
+  return sel ? sel.dataset.val : '';
+}
+
+// ══════════════════════════════════════
+// PREENCHIMENTO DA REVISÃO
+// ══════════════════════════════════════
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value.trim() || '—') : '—';
+}
+
+function preencherRevisao() {
+  document.getElementById('rv-razao').textContent    = v('razao-social');
+  document.getElementById('rv-fantasia').textContent = v('nome-fantasia');
+  document.getElementById('rv-cnpj').textContent     = v('cnpj');
+  document.getElementById('rv-alvara').textContent   = v('alvara-num') + (v('alvara-val') !== '—' ? ' · Val: ' + formatarData(v('alvara-val')) : '');
+
+  const rua    = v('logradouro');
+  const num    = v('numero');
+  const comp   = v('complemento');
+  document.getElementById('rv-rua').textContent    = rua + (num !== '—' ? ', '+num : '') + (comp !== '—' ? ' ('+comp+')' : '');
+  document.getElementById('rv-bairro').textContent = v('bairro') + (v('cep') !== '—' ? ' · CEP: '+v('cep') : '');
+  document.getElementById('rv-cidade').textContent = v('cidade') + ' / ' + v('estado');
+
+  const TIPOS = { corporativo:'Restaurante Corporativo', hospitalar:'UAN Hospitalar', escolar:'UAN Escolar', campo:'Canteiro / Campo', popular:'Restaurante Popular', catering:'Catering / Industrial' };
+  document.getElementById('rv-tipo').textContent      = TIPOS[getSelectedCard('tipo-uan-cards')] || '—';
+  document.getElementById('rv-refeicoes').textContent = v('ref-dia') !== '—' ? v('ref-dia') + ' refeições/dia' : '—';
+  document.getElementById('rv-colab').textContent     = v('n-colab') !== '—' ? v('n-colab') + ' colaboradores' : '—';
+  document.getElementById('rv-func').textContent      = v('dias-func') + ' · ' + v('hr-abertura') + '–' + v('hr-fechamento');
+
+  document.getElementById('rv-rt-nome').textContent    = v('rt-nome');
+  document.getElementById('rv-rt-crn').textContent     = v('rt-crn');
+  document.getElementById('rv-meta-conf').textContent  = v('meta-conf') + '%';
+  document.getElementById('rv-meta-custo').textContent = 'R$ ' + v('meta-custo');
+}
+
+function formatarData(d) {
+  if (!d || d === '—') return '—';
+  const parts = d.split('-');
+  return parts[2] + '/' + parts[1] + '/' + parts[0];
+}
+
+// ══════════════════════════════════════
+// SALVAR UAN NO SUPABASE
+// ══════════════════════════════════════
+async function salvarUAN() {
+  const btn  = document.getElementById('btn-salvar');
+  const txt  = document.getElementById('salvar-txt');
+  const spin = document.getElementById('salvar-spin');
+
+  // Validação mínima
+  const nomeFantasia = document.getElementById('nome-fantasia').value.trim();
+  if (!nomeFantasia) {
+    showToast('⚠️ Informe o Nome Fantasia da UAN (Passo 1).');
+    irPara(1); return;
+  }
+  const rtNome = document.getElementById('rt-nome').value.trim();
+  if (!rtNome) {
+    showToast('⚠️ Informe o nome do Nutricionista RT (Passo 5).');
+    irPara(5); return;
+  }
+
+  btn.disabled = true; txt.style.display = 'none'; spin.style.display = 'block';
+
+  // Monta objeto da UAN
+  const uanData = {
+    nome:          nomeFantasia,
+    razao_social:  document.getElementById('razao-social').value.trim(),
+    cnpj:          document.getElementById('cnpj').value.trim(),
+    endereco:      [
+      document.getElementById('logradouro').value,
+      document.getElementById('numero').value,
+      document.getElementById('complemento').value,
+    ].filter(Boolean).join(', '),
+    cidade:        document.getElementById('cidade').value.trim(),
+    estado:        document.getElementById('estado').value,
+    tipo:          getSelectedCard('tipo-uan-cards') || 'corporativo',
+    capacidade:    parseInt(document.getElementById('ref-dia').value) || null,
+    telefone:      document.getElementById('telefone').value.trim(),
+    ativo:         true,
+    meta_conformidade:  parseFloat(document.getElementById('meta-conf').value) || 85,
+    meta_custo_per_cap: parseFloat(document.getElementById('meta-custo').value) || 9,
+  };
+
+  // Metadados extras (salvar em JSON separado se necessário)
+  const extras = {
+    rt_nome:       rtNome,
+    rt_crn:        document.getElementById('rt-crn').value.trim(),
+    rt_email:      document.getElementById('rt-email').value.trim(),
+    rt_telefone:   document.getElementById('rt-tel').value.trim(),
+    n_colab:       parseInt(document.getElementById('n-colab').value) || null,
+    area_m2:       parseFloat(document.getElementById('area-m2').value) || null,
+    hr_abertura:   document.getElementById('hr-abertura').value,
+    hr_fechamento: document.getElementById('hr-fechamento').value,
+    dias_func:     document.getElementById('dias-func').value,
+    tipos_ref:     document.getElementById('tipos-ref').value,
+    equipamentos: {
+      camara_carnes: document.getElementById('eq-camara-carnes').classList.contains('on'),
+      camara_veg:    document.getElementById('eq-camara-veg').classList.contains('on'),
+      freezer:       document.getElementById('eq-freezer').classList.contains('on'),
+      gelad_latic:   document.getElementById('eq-gelad-latic').classList.contains('on'),
+      balcao:        document.getElementById('eq-balcao').classList.contains('on'),
+      passthrough:   document.getElementById('eq-passthrough').classList.contains('on'),
+      forno:         document.getElementById('eq-forno').classList.contains('on'),
+      fritadeira:    document.getElementById('eq-fritadeira').classList.contains('on'),
+      reservatorio:  document.getElementById('eq-reservatorio').classList.contains('on'),
+      exaustor:      document.getElementById('eq-exaustor').classList.contains('on'),
+    }
+  };
+
+  try {
+    let uanId = null;
+
+    if (db) {
+      // Verifica sessão
+      const { data: sessao } = await db.auth.getSession();
+
+      if (sessao?.session?.user) {
+        // Salva UAN no banco
+        uanData.consultor_id = sessao.session.user.id;
+        const { data, error } = await db.from('uans').insert(uanData).select().single();
+
+        if (error) throw error;
+        uanId = data.id;
+
+        // Salva POPs padrão
+        await criarPOPsPadrao(uanId, rtNome, document.getElementById('rt-crn').value.trim(), nomeFantasia);
+
+        showToast('✅ UAN salva no banco com sucesso!');
+      } else {
+        // Sem sessão — modo demo
+        console.log('Demo — dados não salvos:', uanData);
+        showToast('ℹ️ Modo demo — faça login para salvar no banco.');
+        await new Promise(r => setTimeout(r, 1200));
+      }
+    } else {
+      await new Promise(r => setTimeout(r, 1400));
+    }
+
+    // Atualiza mensagem de sucesso
+    document.getElementById('success-msg').textContent =
+      `"${nomeFantasia}" foi cadastrada com sucesso${uanId ? ' e salva no banco de dados' : ' (modo demo)'}. ` +
+      'Os 8 POPs obrigatórios foram gerados automaticamente com base na RDC 216/2004.';
+
+    // Vai para tela de sucesso
+    document.getElementById('step-6').classList.remove('active');
+    document.getElementById('step-7').classList.add('active');
+    document.getElementById('prog-fill').style.width = '100%';
+    document.getElementById('prog-pct').textContent = '100%';
+
+    // Atualiza nav
+    currentStep = 7;
+    document.querySelectorAll('.step-nav-item').forEach(i => i.classList.add('done'));
+
+  } catch(err) {
+    console.error('Erro ao salvar UAN:', err);
+    showToast('❌ Erro ao salvar: ' + (err.message || 'Tente novamente.'));
+    btn.disabled = false; txt.style.display = 'inline'; spin.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════
+// CRIA POPs PADRÃO NO BANCO
+// ══════════════════════════════════════
+async function criarPOPsPadrao(uanId, rtNome, rtCrn, uanNome) {
+  if (!db || !uanId) return;
+
+  const hoje = new Date().toISOString().split('T')[0];
+  const em6m = new Date(Date.now() + 180*24*60*60*1000).toISOString().split('T')[0];
+
+  const pops = [
+    { numero:'POP 01', titulo:'Higienização de Instalações, Equipamentos e Utensílios', frequencia:'Diária' },
+    { numero:'POP 02', titulo:'Controle Integrado de Vetores e Pragas Urbanas', frequencia:'Mensal' },
+    { numero:'POP 03', titulo:'Higienização do Reservatório de Água', frequencia:'Semestral' },
+    { numero:'POP 04', titulo:'Higiene e Saúde dos Manipuladores', frequencia:'Diária' },
+    { numero:'POP 05', titulo:'Manejo dos Resíduos Sólidos', frequencia:'Diária' },
+    { numero:'POP 06', titulo:'Manutenção Preventiva e Calibração de Equipamentos', frequencia:'Mensal' },
+    { numero:'POP 07', titulo:'Seleção de Fornecedores e Recebimento de Mercadorias', frequencia:'A cada recebimento' },
+    { numero:'POP 08', titulo:'Garantia da Qualidade do Alimento Preparado', frequencia:'Diária' },
+  ].map(p => ({
+    uan_id:         uanId,
+    numero:         p.numero,
+    titulo:         p.titulo,
+    base_legal:     'RDC 216/2004 — ANVISA',
+    responsavel:    rtNome + (rtCrn ? ' · ' + rtCrn : ''),
+    frequencia:     p.frequencia,
+    revisao_period: 'Semestral',
+    data_elaboracao: hoje,
+    proxima_revisao: em6m,
+    status:         'vigente',
+    obrigatorio:    true,
+    versao:         'v1.0',
+    objetivo:       `Procedimento operacional padronizado para ${p.titulo.toLowerCase()} na UAN ${uanNome}, conforme RDC 216/2004 da ANVISA.`,
+  }));
+
+  const { error } = await db.from('pops').insert(pops);
+  if (error) console.warn('Aviso ao criar POPs:', error.message);
+  else console.log('✅ 8 POPs criados automaticamente');
+}
+
+// ══════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════
+function cadastrarOutra() {
+  // Reseta o formulário
+  document.querySelectorAll('.inp, .area').forEach(i => { i.value = ''; i.classList.remove('ok','err'); });
+  document.querySelectorAll('.toggle').forEach(t => {
+    if (['eq-camara-carnes','eq-camara-veg','eq-freezer','eq-balcao','eq-reservatorio'].includes(t.id)) {
+      t.classList.add('on');
+    } else { t.classList.remove('on'); }
+  });
+  irPara(1);
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderStepsNav();
+atualizarProgresso();
+verificarSessao();
+</script>
+</body>
+</html>

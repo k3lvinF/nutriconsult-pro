@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriConsult Pro — POPs & Manual de Boas Práticas</title>
+<style>
+:root {
+  --verde:     #0D2B18;
+  --verde-m:   #1A5C38;
+  --verde-b:   #2E8A55;
+  --verde-l:   #52B87A;
+  --verde-xl:  #A8DBC0;
+  --verde-p:   #E8F7EE;
+  --ouro:      #8A6A20;
+  --ouro-m:    #B8900A;
+  --ouro-l:    #D4A820;
+  --ouro-p:    #FDF0C8;
+  --ouro-xl:   #FDF8EE;
+  --cinza-1:   #1A1A16;
+  --cinza-2:   #2E2E28;
+  --cinza-3:   #5C5C52;
+  --cinza-4:   #8C8C80;
+  --cinza-5:   #BDBDB0;
+  --cinza-6:   #E8E8E0;
+  --cinza-7:   #F4F4F0;
+  --cinza-8:   #FAFAF7;
+  --red:       #8B1F1F;
+  --red-l:     #F5E8E8;
+  --blue:      #1A3F6F;
+  --blue-l:    #E8F0FA;
+  --border:    #D8D8D0;
+  --sh:        0 2px 16px rgba(0,0,0,0.07);
+  --sh-lg:     0 8px 48px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza-7);color:var(--cinza-1);min-height:100vh;display:flex;}
+
+/* ── SIDEBAR ── */
+.sb{width:248px;min-height:100vh;background:var(--verde);position:fixed;inset:0 auto 0 0;z-index:100;display:flex;flex-direction:column;}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--verde-l),var(--ouro-l));}
+.sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;}
+.sb-mark{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--verde-b),var(--verde-l));display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(46,138,85,0.4);}
+.sb-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.1px;}
+.sb-ver{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1.2px;text-transform:uppercase;margin-top:1px;}
+.sb-uan{margin:10px 14px;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:8px;}
+.sb-uan .l{font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1.2px;}
+.sb-uan .v{font-size:12px;color:#fff;font-weight:600;margin-top:2px;}
+.sb-nav{flex:1;padding:4px 0;overflow-y:auto;}
+.sb-sec{padding:12px 14px 3px;font-size:9px;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:2px;font-weight:700;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 14px;color:rgba(255,255,255,0.48);font-size:13px;cursor:pointer;border-radius:0 8px 8px 0;margin-right:8px;margin-bottom:1px;transition:all .15s;position:relative;text-decoration:none;}
+.sb-item:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.85);}
+.sb-item.on{background:rgba(82,184,122,0.18);color:#fff;font-weight:600;}
+.sb-item.on::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--verde-l);border-radius:0 2px 2px 0;}
+.sb-ico{font-size:14px;width:17px;text-align:center;}
+.sb-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,0.06);}
+.sb-user{display:flex;align-items:center;gap:8px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--verde-m),var(--verde-l));border:1.5px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+
+/* ── MAIN ── */
+.main{margin-left:248px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sh);}
+.tb-l .title{font-size:15px;font-weight:700;color:var(--cinza-1);}
+.tb-l .sub{font-size:11px;color:var(--cinza-4);margin-top:1px;}
+.tb-r{display:flex;gap:7px;align-items:center;}
+
+/* ── BOTÕES ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit;}
+.btn-primary{background:var(--verde-m);color:#fff;box-shadow:0 2px 8px rgba(26,92,56,.28);}
+.btn-primary:hover{background:var(--verde-b);transform:translateY(-1px);}
+.btn-ouro{background:var(--ouro-m);color:#fff;box-shadow:0 2px 8px rgba(184,144,10,.28);}
+.btn-ouro:hover{background:var(--ouro);transform:translateY(-1px);}
+.btn-outline{background:#fff;color:var(--verde-m);border:1.5px solid var(--verde-l);}
+.btn-outline:hover{background:var(--verde-p);}
+.btn-ghost{background:var(--cinza-7);color:var(--cinza-3);}
+.btn-ghost:hover{background:var(--cinza-6);}
+.btn-red{background:var(--red-l);color:var(--red);border:1px solid #EDCECE;}
+.btn-red:hover{background:var(--red);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:11px;border-radius:7px;}
+.btn-xs{padding:3px 9px;font-size:10px;border-radius:6px;}
+
+/* ── CONTENT ── */
+.content{padding:22px 26px;flex:1;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:18px;box-shadow:var(--sh);}
+.tab{flex:1;padding:8px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:transparent;color:var(--cinza-4);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab:hover{background:var(--cinza-8);color:var(--cinza-2);}
+.tab.on{background:var(--cinza-1);color:#fff;}
+.tab-panel{display:none;}
+.tab-panel.on{display:block;}
+
+/* ── CARD ── */
+.card{background:#fff;border-radius:13px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px;}
+.card-h{padding:13px 18px 11px;background:var(--cinza-8);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-h .ct{font-size:13px;font-weight:700;color:var(--cinza-1);display:flex;align-items:center;gap:7px;}
+.card-b{padding:16px 18px;}
+
+/* ── GRID POPs ── */
+.pops-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.pop-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;cursor:pointer;transition:all .2s;}
+.pop-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:var(--verde-l);}
+.pop-card.selected{border-color:var(--verde-l);box-shadow:0 0 0 3px rgba(82,184,122,.18);}
+.pc-top{padding:16px 16px 12px;border-bottom:1px solid var(--border);}
+.pc-num{font-size:9px;font-weight:700;color:var(--cinza-4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;}
+.pc-ico{font-size:24px;margin-bottom:6px;display:block;}
+.pc-title{font-size:12px;font-weight:700;color:var(--cinza-1);line-height:1.35;}
+.pc-status{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;}
+.pc-top{position:relative;}
+.st-ok{background:var(--verde-l);box-shadow:0 0 0 2px rgba(82,184,122,.2);}
+.st-warn{background:var(--ouro-l);box-shadow:0 0 0 2px rgba(212,168,32,.2);}
+.st-venc{background:#D04040;box-shadow:0 0 0 2px rgba(208,64,64,.2);}
+.st-novo{background:var(--cinza-5);box-shadow:0 0 0 2px rgba(189,189,176,.2);}
+.pc-bot{padding:9px 16px;}
+.pc-meta{font-size:10px;color:var(--cinza-4);line-height:1.7;}
+.pc-meta strong{color:var(--cinza-3);}
+.pc-btns{display:flex;gap:5px;margin-top:8px;}
+
+/* ── EDITOR ── */
+.editor-layout{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start;}
+.editor-sidebar{background:#fff;border-radius:13px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;position:sticky;top:70px;}
+.es-head{padding:14px 16px;background:var(--verde);color:#fff;}
+.es-head h3{font-size:13px;font-weight:700;margin-bottom:3px;}
+.es-head p{font-size:10px;color:rgba(255,255,255,0.5);}
+.es-fields{padding:12px;display:flex;flex-direction:column;gap:10px;}
+.fld{display:flex;flex-direction:column;gap:3px;}
+.lbl{font-size:10px;font-weight:700;color:var(--cinza-4);text-transform:uppercase;letter-spacing:.7px;}
+.inp,.sel,.area{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;color:var(--cinza-1);background:#fff;outline:none;transition:border .14s;font-family:inherit;width:100%;}
+.inp:focus,.sel:focus,.area:focus{border-color:var(--verde-l);box-shadow:0 0 0 3px rgba(82,184,122,.1);}
+.area{resize:vertical;min-height:65px;line-height:1.5;}
+.sel{appearance:none;cursor:pointer;}
+
+/* ── DOC PREVIEW ── */
+.doc-wrap{background:#fff;border-radius:13px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;}
+.doc-toolbar{padding:10px 16px;background:var(--cinza-8);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.doc-content{padding:32px 40px;max-width:750px;margin:0 auto;}
+
+/* ── DOCUMENTO PROFISSIONAL ── */
+.doc-header{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:16px;border-bottom:2px solid var(--cinza-1);margin-bottom:20px;}
+.doc-logo-box{display:flex;align-items:center;gap:10px;}
+.doc-logo-sq{width:44px;height:44px;border-radius:9px;background:linear-gradient(135deg,var(--verde-m),var(--verde-l));display:flex;align-items:center;justify-content:center;font-size:20px;}
+.doc-brand strong{display:block;font-size:14px;font-weight:700;color:var(--cinza-1);}
+.doc-brand span{font-size:10px;color:var(--cinza-4);}
+.doc-meta-box{text-align:right;font-size:10px;color:var(--cinza-4);line-height:1.8;}
+.doc-meta-box strong{color:var(--cinza-3);}
+.doc-title-block{margin-bottom:20px;}
+.doc-pretitle{font-size:10px;font-weight:700;color:var(--cinza-4);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
+.doc-main-title{font-size:22px;font-weight:700;color:var(--cinza-1);line-height:1.2;margin-bottom:6px;}
+.doc-meta-row{display:flex;gap:16px;flex-wrap:wrap;}
+.doc-meta-item{font-size:11px;color:var(--cinza-4);display:flex;align-items:center;gap:4px;}
+.doc-meta-item strong{color:var(--cinza-3);}
+
+/* SEÇÕES DO DOCUMENTO */
+.doc-sec{margin-bottom:20px;}
+.doc-sec-title{font-size:10px;font-weight:700;color:var(--verde-m);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;padding-bottom:5px;border-bottom:1.5px solid var(--verde-p);display:flex;align-items:center;gap:7px;}
+.doc-sec-num{width:18px;height:18px;background:var(--verde-m);color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;}
+.doc-text{font-size:13px;color:var(--cinza-2);line-height:1.75;margin-bottom:10px;}
+.doc-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
+.doc-table th{background:var(--cinza-1);color:#fff;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.doc-table th:first-child{border-radius:6px 0 0 0;}
+.doc-table th:last-child{border-radius:0 6px 0 0;}
+.doc-table td{padding:8px 10px;border-bottom:1px solid var(--cinza-6);color:var(--cinza-2);}
+.doc-table tr:nth-child(even) td{background:var(--cinza-8);}
+.doc-table tr:last-child td{border-bottom:none;}
+.doc-step-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.doc-step{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--cinza-8);border:1px solid var(--cinza-6);}
+.step-n{width:22px;height:22px;border-radius:50%;background:var(--verde-l);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-t{font-size:12px;color:var(--cinza-2);line-height:1.55;}
+.doc-alert{padding:11px 14px;border-radius:8px;margin-bottom:10px;display:flex;gap:8px;font-size:12px;line-height:1.5;}
+.da-atencao{background:var(--ouro-p);border-left:3px solid var(--ouro-l);color:var(--ouro);}
+.da-critico{background:var(--red-l);border-left:3px solid #D04040;color:var(--red);}
+.da-info{background:var(--verde-p);border-left:3px solid var(--verde-l);color:var(--verde-m);}
+.doc-sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);}
+.sign-block{text-align:center;}
+.sign-line{border-bottom:1px solid var(--cinza-2);height:30px;margin-bottom:5px;}
+.sign-lbl{font-size:10px;color:var(--cinza-4);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.doc-footer-bar{background:var(--cinza-1);border-radius:7px;padding:9px 14px;display:flex;justify-content:space-between;margin-top:18px;}
+.doc-footer-bar span{font-size:9px;color:rgba(255,255,255,0.4);}
+
+/* ── PILL ── */
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.pill-g{background:var(--verde-p);color:var(--verde-m);}
+.pill-a{background:var(--ouro-p);color:var(--ouro);}
+.pill-r{background:var(--red-l);color:var(--red);}
+.pill-n{background:var(--cinza-6);color:var(--cinza-4);}
+.pill-b{background:var(--blue-l);color:var(--blue);}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,26,22,.6);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;width:90%;max-width:680px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 80px rgba(0,0,0,.25);animation:mIn .2s ease both;}
+@keyframes mIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-h{padding:16px 20px;background:var(--verde);display:flex;align-items:center;justify-content:space-between;}
+.modal-h h2{font-size:14px;font-weight:700;color:#fff;}
+.modal-h p{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.mc{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.mc:hover{background:rgba(255,255,255,.22);}
+.modal-b{padding:20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;}
+.modal-f{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--cinza-8);}
+.fld-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* ── GRID 2 ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+
+/* ── IMPRESSÃO ── */
+@media print {
+  .sb,.topbar,.doc-toolbar,.tabs,.card-h .btn-ghost,.btn-ouro,.btn-primary,.btn-outline,.overlay,#print-only-hide{display:none!important;}
+  .main{margin-left:0!important;}
+  .doc-content{padding:20px!important;max-width:100%!important;}
+  body{background:#fff!important;}
+  .doc-wrap{border:none!important;box-shadow:none!important;}
+  .doc-sec-title{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .doc-table th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .doc-footer-bar{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:var(--cinza-1);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--sh-lg);display:flex;align-items:center;gap:8px;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="sb-mark">🥗</div>
+    <div><div class="sb-name">NutriConsult Pro</div><div class="sb-ver">v1.0 · Gestão de UANs</div></div>
+  </div>
+  <div class="sb-uan"><div class="l">Unidade ativa</div><div class="v">Rest. Corporativo Alfa</div></div>
+  <div class="sb-nav">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-item" href="hub.html"><span class="sb-ico">🏠</span> Hub Central</a>
+    <a class="sb-item" href="NutriConsult_Pro_Sistema_Completo.html"><span class="sb-ico">📊</span> Dashboard</a>
+    <a class="sb-item" href="NutriConsult_Checklists.html"><span class="sb-ico">✅</span> Checklists</a>
+    <div class="sb-sec">Técnico</div>
+    <a class="sb-item" href="NutriConsult_FichaTecnica_TACO_v2.html"><span class="sb-ico">🍽️</span> Fichas Técnicas</a>
+    <div class="sb-sec">Regulatório</div>
+    <a class="sb-item on" href="#"><span class="sb-ico">📄</span> POPs & MBP</a>
+    <a class="sb-item" href="#placas"><span class="sb-ico">🪧</span> Placas</a>
+    <div class="sb-sec">Gestão</div>
+    <a class="sb-item" href="NutriConsult_Pro_Sistema_Completo.html"><span class="sb-ico">👥</span> Equipe</a>
+    <a class="sb-item" href="NutriConsult_Relatorio_Quinzenal.html"><span class="sb-ico">📈</span> Relatórios</a>
+    <a class="sb-item" href="notificacoes.html"><span class="sb-ico">🔔</span> Notificações</a>
+    <a class="sb-item" href="backup_exportacao.html"><span class="sb-ico">💾</span> Backup</a>
+    <a class="sb-item" href="configuracoes.html"><span class="sb-ico">⚙️</span> Configurações</a>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av">RT</div>
+      <div><div style="font-size:12px;color:#fff;font-weight:600">Nutricionista RT</div><div style="font-size:10px;color:rgba(255,255,255,.35)">Responsável Técnico</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-l">
+      <div class="title">POPs & Manual de Boas Práticas</div>
+      <div class="sub">8 POPs obrigatórios · RDC 216/2004 ANVISA · Editáveis e prontos para uso</div>
+    </div>
+    <div class="tb-r" id="print-only-hide">
+      <button class="btn btn-ghost btn-sm" onclick="exportarHTML()">↗ Exportar HTML</button>
+      <button class="btn btn-outline btn-sm" onclick="imprimirDoc()">🖨️ Imprimir</button>
+      <button class="btn btn-ouro btn-sm" onclick="openModal('modalNovoPOP')">+ POP Personalizado</button>
+      <button class="btn btn-primary btn-sm" onclick="gerarPacote()">📦 Pacote Completo PDF</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab on" id="tab-pops" onclick="showTab('pops',this)">📄 POPs — RDC 216</button>
+      <button class="tab" id="tab-editor" onclick="showTab('editor',this)">✏️ Editor de POP</button>
+      <button class="tab" id="tab-mbp" onclick="showTab('mbp',this)">📋 Manual de Boas Práticas</button>
+      <button class="tab" id="tab-placas" onclick="showTab('placas',this)">🪧 Placas de Orientação</button>
+    </div>
+
+    <!-- ══ TAB: POPs ══ -->
+    <div id="panel-pops" class="tab-panel on">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--cinza-1)">8 POPs Obrigatórios — RDC 216/2004</div>
+          <div style="font-size:11px;color:var(--cinza-4);margin-top:2px">Clique em "Editar" para personalizar · Clique em "PDF" para imprimir</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:11px;color:var(--cinza-4)">Status geral:</span>
+          <span class="pill pill-a">6 vigentes · 1 vencendo · 1 vencido</span>
+        </div>
+      </div>
+
+      <div class="pops-grid" id="pops-grid">
+        <!-- Gerado por JS -->
+      </div>
+
+      <!-- Legenda -->
+      <div style="display:flex;gap:16px;align-items:center;padding:12px 16px;background:#fff;border-radius:9px;border:1px solid var(--border);width:fit-content;margin-top:8px;">
+        <span style="font-size:10px;font-weight:700;color:var(--cinza-4);text-transform:uppercase;letter-spacing:1px">Status:</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--cinza-2)"><span style="width:9px;height:9px;border-radius:50%;background:var(--verde-l);display:inline-block"></span>Vigente</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--cinza-2)"><span style="width:9px;height:9px;border-radius:50%;background:var(--ouro-l);display:inline-block"></span>Vence em breve</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--cinza-2)"><span style="width:9px;height:9px;border-radius:50%;background:#D04040;display:inline-block"></span>Vencido — renovar</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--cinza-2)"><span style="width:9px;height:9px;border-radius:50%;background:var(--cinza-5);display:inline-block"></span>Novo / Não revisado</span>
+      </div>
+    </div>
+
+    <!-- ══ TAB: EDITOR ══ -->
+    <div id="panel-editor" class="tab-panel">
+      <div class="editor-layout">
+        <!-- Sidebar do editor -->
+        <div class="editor-sidebar">
+          <div class="es-head">
+            <h3>📋 Dados do Documento</h3>
+            <p>Preenchimento automático no PDF</p>
+          </div>
+          <div class="es-fields">
+            <div class="fld"><label class="lbl">POP Nº</label><input class="inp" id="ed-num" value="POP 01"></div>
+            <div class="fld"><label class="lbl">Título</label><input class="inp" id="ed-titulo" value="Higienização de Instalações, Equipamentos e Utensílios" oninput="updateDocTitle()"></div>
+            <div class="fld"><label class="lbl">Base Legal</label><input class="inp" id="ed-base" value="RDC 216/2004 — ANVISA"></div>
+            <div class="fld"><label class="lbl">Responsável (RT)</label><input class="inp" id="ed-resp" value="Nutricionista RT — CRN-X 00000"></div>
+            <div class="fld"><label class="lbl">Data de Elaboração</label><input class="inp" type="date" id="ed-data" value="2025-05-13"></div>
+            <div class="fld"><label class="lbl">Versão</label><input class="inp" id="ed-versao" value="v1.0"></div>
+            <div class="fld"><label class="lbl">Revisão Periódica</label>
+              <select class="sel" id="ed-revisao">
+                <option selected>Semestral (6 meses)</option>
+                <option>Anual (12 meses)</option>
+                <option>Trimestral (3 meses)</option>
+                <option>Bimestral (2 meses)</option>
+              </select>
+            </div>
+            <div class="fld"><label class="lbl">Estabelecimento</label><input class="inp" id="ed-estab" value="Rest. Corporativo Alfa"></div>
+            <div class="fld"><label class="lbl">Objetivo (resumido)</label><textarea class="area" id="ed-obj" rows="3">Estabelecer procedimentos para higienização adequada das instalações, equipamentos e utensílios da UAN.</textarea></div>
+            <div class="fld"><label class="lbl">Frequência</label>
+              <select class="sel" id="ed-freq">
+                <option selected>Diária</option>
+                <option>Semanal</option>
+                <option>Quinzenal</option>
+                <option>Mensal</option>
+                <option>Conforme necessidade</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showToast('✅ Dados aplicados ao documento!')">✓ Aplicar dados</button>
+            <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="showTab('pops',document.getElementById('tab-pops'))">← Voltar à lista</button>
+          </div>
+        </div>
+
+        <!-- Preview do documento -->
+        <div class="doc-wrap">
+          <div class="doc-toolbar">
+            <button class="btn btn-ghost btn-sm" onclick="showTab('pops',document.getElementById('tab-pops'))">← Lista</button>
+            <span style="font-size:11px;color:var(--cinza-4);flex:1" id="doc-toolbar-title">Editando: POP 01</span>
+            <button class="btn btn-ghost btn-sm" onclick="exportarHTML()">↗ Exportar HTML</button>
+            <button class="btn btn-outline btn-sm" onclick="imprimirDoc()">🖨️ Imprimir / PDF</button>
+            <button class="btn btn-primary btn-sm" onclick="salvarPOP()">💾 Salvar</button>
+          </div>
+
+          <div class="doc-content" id="doc-content">
+            <!-- Conteúdo do POP atual -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: MBP ══ -->
+    <div id="panel-mbp" class="tab-panel">
+      <div class="g2">
+        <div class="card">
+          <div class="card-h"><div class="ct">📋 Manual de Boas Práticas</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="imprimirMBP()">🖨️ Imprimir</button>
+              <button class="btn btn-primary btn-sm" onclick="gerarMBP()">📄 Gerar PDF Completo</button>
+            </div>
+          </div>
+          <div class="card-b">
+            <div style="margin-bottom:14px;padding:12px 14px;background:var(--verde-p);border-radius:9px;border-left:3px solid var(--verde-l);">
+              <div style="font-size:11px;font-weight:700;color:var(--verde-m);margin-bottom:4px">ℹ️ Sobre o MBP</div>
+              <p style="font-size:12px;color:var(--cinza-2);line-height:1.6">O Manual de Boas Práticas (MBP) é documento obrigatório pela RDC 216/2004. Deve descrever as operações realizadas pelo estabelecimento, incluindo requisitos higiênico-sanitários, controles existentes e destino final dos resíduos.</p>
+            </div>
+            <div id="mbp-secoes" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-h"><div class="ct">📊 Progresso do MBP</div></div>
+            <div class="card-b">
+              <div style="display:flex;justify-content:center;margin-bottom:16px">
+                <div style="position:relative;width:100px;height:100px">
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--cinza-6)" stroke-width="10"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--verde-l)" stroke-width="10"
+                      stroke-dasharray="251" stroke-dashoffset="100" stroke-linecap="round"
+                      transform="rotate(-90 50 50)"/>
+                  </svg>
+                  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                    <div style="font-size:20px;font-weight:700;color:var(--cinza-1)">60%</div>
+                    <div style="font-size:9px;color:var(--cinza-4)">concluído</div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+                <div style="display:flex;justify-content:space-between;padding:7px 10px;background:var(--verde-p);border-radius:7px;border:1px solid var(--verde-xl)"><span style="color:var(--verde-m)">✅ Concluídas</span><span style="font-weight:700;color:var(--verde-m)">6</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 10px;background:var(--ouro-p);border-radius:7px;border:1px solid var(--ouro-p)"><span style="color:var(--ouro)">⏳ Em andamento</span><span style="font-weight:700;color:var(--ouro)">1</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 10px;background:var(--cinza-8);border-radius:7px;border:1px solid var(--cinza-6)"><span style="color:var(--cinza-3)">📋 Pendentes</span><span style="font-weight:700;color:var(--cinza-3)">3</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><div class="ct">📎 Documentos Relacionados</div></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--cinza-8);border-radius:8px;border:1px solid var(--border)">
+                <span style="font-size:12px;color:var(--cinza-2)">📄 Todos os POPs (8)</span>
+                <button class="btn btn-ghost btn-xs" onclick="showTab('pops',document.getElementById('tab-pops'))">Ver</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--cinza-8);border-radius:8px;border:1px solid var(--border)">
+                <span style="font-size:12px;color:var(--cinza-2)">🪧 Placas de Orientação</span>
+                <button class="btn btn-ghost btn-xs" onclick="showTab('placas',document.getElementById('tab-placas'))">Ver</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--cinza-8);border-radius:8px;border:1px solid var(--border)">
+                <span style="font-size:12px;color:var(--cinza-2)">📊 Relatório Quinzenal</span>
+                <a class="btn btn-ghost btn-xs" href="NutriConsult_Relatorio_Quinzenal.html">Ver</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PLACAS ══ -->
+    <div id="panel-placas" class="tab-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <div style="font-size:14px;font-weight:700">Placas de Orientação</div>
+          <div style="font-size:11px;color:var(--cinza-4);margin-top:2px">Clique em imprimir para gerar em A4 · Afixar nos locais indicados</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showToast('🪧 Nova placa em desenvolvimento...')">+ Nova Placa</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px" id="placas-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: NOVO POP -->
+<div class="overlay" id="modalNovoPOP">
+  <div class="modal">
+    <div class="modal-h"><div><h2>+ Novo POP Personalizado</h2><p>Além dos 8 obrigatórios da RDC 216</p></div><button class="mc" onclick="closeModal('modalNovoPOP')">✕</button></div>
+    <div class="modal-b">
+      <div class="fld-row2">
+        <div class="fld"><label class="lbl">Número do POP</label><input class="inp" placeholder="Ex: POP 09"></div>
+        <div class="fld"><label class="lbl">Versão</label><input class="inp" value="v1.0"></div>
+      </div>
+      <div class="fld"><label class="lbl">Título</label><input class="inp" placeholder="Ex: Controle de Alergênicos"></div>
+      <div class="fld-row2">
+        <div class="fld"><label class="lbl">Responsável</label><input class="inp" placeholder="Nome e CRN"></div>
+        <div class="fld"><label class="lbl">Periodicidade</label><select class="sel"><option>Semestral</option><option>Anual</option><option>Trimestral</option></select></div>
+      </div>
+      <div class="fld"><label class="lbl">Objetivo</label><textarea class="area" placeholder="Descreva o objetivo deste POP..."></textarea></div>
+      <div class="fld"><label class="lbl">Base Legal</label><input class="inp" value="RDC 216/2004 — ANVISA"></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalNovoPOP')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modalNovoPOP');showToast('✅ POP criado! Abrindo editor...');setTimeout(()=>showTab(\'editor\',document.getElementById(\'tab-editor\')),600)">Criar e Abrir Editor →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-msg">✅ Pronto!</span></div>
+
+<script>
+// ══════════════════════════════════════
+// DADOS DOS 8 POPs (RDC 216/2004)
+// ══════════════════════════════════════
+const POPS = [
+  {
+    id:1, num:"POP 01", status:"ok",
+    icon:"🧹", titulo:"Higienização de Instalações, Equipamentos e Utensílios",
+    revisao:"15/04/2025", proxima:"15/10/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° e 4°", versao:"v3.0", freq:"Diária",
+    objetivo:"Estabelecer procedimentos para a correta higienização das instalações físicas, equipamentos e utensílios utilizados na produção de alimentos.",
+    conteudo: gerarPOP01()
+  },
+  {
+    id:2, num:"POP 02", status:"warn",
+    icon:"🐛", titulo:"Controle Integrado de Vetores e Pragas Urbanas",
+    revisao:"19/11/2024", proxima:"19/05/2025 ⚠", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° §4°", versao:"v2.0", freq:"Mensal",
+    objetivo:"Prevenir a presença de vetores e pragas urbanas nas instalações da UAN através de medidas de controle integrado.",
+    conteudo: gerarPOP02()
+  },
+  {
+    id:3, num:"POP 03", status:"ok",
+    icon:"💧", titulo:"Higienização do Reservatório de Água",
+    revisao:"02/04/2025", proxima:"02/10/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Portaria 2914/2011", versao:"v2.0", freq:"Semestral",
+    objetivo:"Garantir a qualidade da água utilizada na UAN por meio da higienização periódica do reservatório.",
+    conteudo: gerarPOP03()
+  },
+  {
+    id:4, num:"POP 04", status:"ok",
+    icon:"🧑‍⚕️", titulo:"Higiene e Saúde dos Manipuladores",
+    revisao:"10/04/2025", proxima:"10/10/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° §2°", versao:"v2.0", freq:"Diária",
+    objetivo:"Assegurar as condições de higiene pessoal e saúde dos manipuladores de alimentos da UAN.",
+    conteudo: gerarPOP04()
+  },
+  {
+    id:5, num:"POP 05", status:"venc",
+    icon:"🗑️", titulo:"Manejo dos Resíduos Sólidos",
+    revisao:"01/10/2024", proxima:"01/04/2025 ✗", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Lei 12.305/2010", versao:"v1.0", freq:"Diária",
+    objetivo:"Estabelecer procedimentos para o correto manejo, acondicionamento e destinação dos resíduos sólidos gerados na UAN.",
+    conteudo: gerarPOP05()
+  },
+  {
+    id:6, num:"POP 06", status:"ok",
+    icon:"🔧", titulo:"Manutenção Preventiva e Calibração de Equipamentos",
+    revisao:"12/01/2025", proxima:"12/07/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° §6°", versao:"v1.0", freq:"Mensal",
+    objetivo:"Manter os equipamentos da UAN em perfeito estado de funcionamento, segurança e higiene.",
+    conteudo: gerarPOP06()
+  },
+  {
+    id:7, num:"POP 07", status:"ok",
+    icon:"🚚", titulo:"Seleção de Fornecedores e Recebimento de Mercadorias",
+    revisao:"22/02/2025", proxima:"22/08/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° §1°", versao:"v1.0", freq:"A cada recebimento",
+    objetivo:"Garantir que as matérias-primas e ingredientes recebidos atendam aos requisitos de qualidade e segurança alimentar.",
+    conteudo: gerarPOP07()
+  },
+  {
+    id:8, num:"POP 08", status:"ok",
+    icon:"🍱", titulo:"Garantia da Qualidade do Alimento Preparado",
+    revisao:"05/03/2025", proxima:"05/09/2025", resp:"Nutricionista RT · CRN-X 00000",
+    base:"RDC 216/2004 · Art. 3° §3°", versao:"v2.0", freq:"Diária",
+    objetivo:"Assegurar que os alimentos preparados atendam aos padrões de qualidade e segurança durante todas as etapas de produção.",
+    conteudo: gerarPOP08()
+  }
+];
+
+// ══════════════════════════════════════
+// CONTEÚDOS DOS POPs
+// ══════════════════════════════════════
+function gerarPOP01() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo e Aplicação</div>
+  <p class="doc-text">Estabelecer os procedimentos para a correta higienização das instalações físicas, equipamentos e utensílios utilizados na produção de alimentos na Unidade de Alimentação e Nutrição (UAN), garantindo a segurança microbiológica do ambiente, em conformidade com a RDC 216/2004 da ANVISA.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Responsáveis pela Execução</div>
+  <table class="doc-table">
+    <thead><tr><th>Responsável</th><th>Cargo</th><th>Atribuição</th></tr></thead>
+    <tbody>
+      <tr><td>Nutricionista RT</td><td>Responsável Técnico</td><td>Supervisão e aprovação do procedimento</td></tr>
+      <tr><td>Técnico em Nutrição</td><td>Técnico</td><td>Execução, monitoramento e registro</td></tr>
+      <tr><td>Equipe de copeiros</td><td>Operacional</td><td>Execução das etapas de limpeza</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Materiais, Produtos e Concentrações</div>
+  <table class="doc-table">
+    <thead><tr><th>Produto/Material</th><th>Concentração/Diluição</th><th>Finalidade</th><th>Tempo de Contato</th></tr></thead>
+    <tbody>
+      <tr><td>Detergente neutro</td><td>Conforme fabricante</td><td>Remoção de resíduos orgânicos</td><td>2–3 min</td></tr>
+      <tr><td>Hipoclorito de sódio 2,5%</td><td>200 ppm (diluição 1:125)</td><td>Sanitização de superfícies de contato</td><td>15 min mínimo</td></tr>
+      <tr><td>Álcool etílico 70% INPM</td><td>70% v/v pronto para uso</td><td>Sanitização de utensílios e superfícies</td><td>30 segundos</td></tr>
+      <tr><td>Esponja não abrasiva</td><td>—</td><td>Esfregação sem danos às superfícies</td><td>—</td></tr>
+      <tr><td>Pano de microfibra</td><td>Higienizado a cada uso</td><td>Secagem e polimento</td><td>—</td></tr>
+      <tr><td>Escova de cerdas duras</td><td>—</td><td>Limpeza de ralos e cantos</td><td>—</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Procedimento Operacional — Passo a Passo</div>
+  <div class="doc-alert da-atencao"><span>⚠️</span><span><strong>Atenção:</strong> Usar sempre EPI completo (avental impermeável, luvas de borracha nitrílica, máscara e botas) durante todo o procedimento. NUNCA misturar produtos químicos de limpeza e sanitização.</span></div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Pré-lavagem:</strong> Remover resíduos grosseiros com água corrente (temperatura ≥ 45°C quando possível), eliminando partículas sólidas visíveis de superfícies, equipamentos e utensílios. Descartar resíduos no lixo adequado.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Lavagem com detergente:</strong> Aplicar detergente neutro e esfregar com esponja ou escova não abrasiva em movimentos circulares, cobrindo toda a superfície. Tempo mínimo de contato: 2 minutos. Garantir ação mecânica eficiente.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Enxágue completo:</strong> Remover completamente o detergente com água corrente. Verificar ausência de resíduos de espuma e restos de alimento. Temperatura recomendada: ≥ 45°C.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Sanitização química:</strong> Aplicar solução de hipoclorito de sódio a 200 ppm nas superfícies de contato com alimentos. Para utensílios: imersão por 15 minutos mínimo. Manter o produto em contato pelo tempo especificado sem enxaguar prematuramente.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t"><strong>Enxágue final (quando necessário):</strong> Superfícies de contato direto com alimentos: remover o sanitizante com água potável. Superfícies ambientais (piso, parede, teto): não é necessário enxágue após aplicação de hipoclorito.</div></div>
+    <div class="doc-step"><div class="step-n">6</div><div class="step-t"><strong>Secagem:</strong> Secar com pano de microfibra higienizado ou permitir secagem ao ar livre em local protegido. Nunca usar panos de uso múltiplo sem sanitização prévia. Equipamentos devem secar completamente antes de uso.</div></div>
+    <div class="doc-step"><div class="step-n">7</div><div class="step-t"><strong>Registro:</strong> Preencher o formulário de controle de higienização com data, horário, área/equipamento higienizado, produto utilizado, concentração e nome do responsável. Encaminhar ao nutricionista responsável para validação.</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">5</span>Frequência de Higienização por Área</div>
+  <table class="doc-table">
+    <thead><tr><th>Local / Equipamento</th><th>Frequência mínima</th><th>Produto sanitizante</th><th>Responsável</th></tr></thead>
+    <tbody>
+      <tr><td>Bancadas e superfícies de trabalho</td><td>A cada 4h e após cada uso</td><td>Hipoclorito 200 ppm</td><td>Manipuladores</td></tr>
+      <tr><td>Equipamentos de cocção</td><td>Diária (final da produção)</td><td>Detergente + hipoclorito</td><td>Cozinheiros</td></tr>
+      <tr><td>Câmaras frias e refrigeradores</td><td>Semanal e quando necessário</td><td>Detergente + álcool 70%</td><td>Técnico em Nutrição</td></tr>
+      <tr><td>Piso da área de produção</td><td>2× ao dia + sempre que sujar</td><td>Detergente + hipoclorito</td><td>Equipe de limpeza</td></tr>
+      <tr><td>Tábuas de corte</td><td>Após cada uso e ao fim do turno</td><td>Hipoclorito 200 ppm</td><td>Manipuladores</td></tr>
+      <tr><td>Facas e utensílios cortantes</td><td>Após cada uso</td><td>Álcool 70% ou hipoclorito</td><td>Manipuladores</td></tr>
+      <tr><td>Paredes e teto (área de produção)</td><td>Mensal</td><td>Detergente + hipoclorito</td><td>Equipe de limpeza</td></tr>
+      <tr><td>Ralos e esgotamento sanitário</td><td>Diária</td><td>Hipoclorito concentrado</td><td>Equipe de limpeza</td></tr>
+      <tr><td>Depósito de lixo e lixeiras</td><td>Diária</td><td>Detergente + hipoclorito</td><td>Equipe de limpeza</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">6</span>Ações Corretivas</div>
+  <div class="doc-alert da-critico"><span>🚨</span><span><strong>Ação corretiva obrigatória:</strong> Em caso de identificação de contaminação visível, falha no processo ou não conformidade nos registros, o responsável deve: (1) Comunicar imediatamente o Nutricionista RT; (2) Interromper o uso do equipamento/área; (3) Realizar nova higienização completa; (4) Verificar e documentar a correção antes de retornar ao uso.</span></div>
+  <p class="doc-text">Quando identificada falha na concentração dos produtos sanitizantes, o responsável deve: preparar nova solução na concentração correta, refazer o processo de sanitização e registrar a ocorrência como não conformidade no sistema.</p>
+</div>`;
+}
+
+function gerarPOP02() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo e Aplicação</div>
+  <p class="doc-text">Prevenir a entrada e presença de vetores e pragas urbanas (insetos, roedores, pássaros e outros animais) nas instalações da UAN, protegendo os alimentos de contaminação biológica e garantindo conformidade com a RDC 216/2004.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Medidas Preventivas (Barreiras Físicas)</div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Proteção de aberturas:</strong> Todas as janelas, aberturas e vãos devem possuir telas milimetradas (malha ≤ 2mm) em bom estado de conservação. Verificar diariamente antes do início das atividades.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Proteção de portas:</strong> Portas externas devem possuir molas para fechamento automático, borrachas de vedação e proteção na parte inferior (≤ 1cm de folga). Manter sempre fechadas durante a operação.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Controle de ralos e esgotamento:</strong> Todos os ralos devem possuir tampa sifão e tela de proteção. Manter fechados quando não em uso. Realizar higienização diária com hipoclorito concentrado.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Organização e armazenamento:</strong> Armazenar alimentos em recipientes herméticos e sobre estrados a ≥ 25 cm do piso, ≥ 60 cm das paredes e ≤ 60 cm do teto. Nunca armazenar alimentos diretamente no piso.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t"><strong>Gestão de resíduos:</strong> Recolher lixo com frequência mínima de 2× ao dia. Manter lixeiras com tampa e saco plástico. Área de armazenamento externo de lixo deve ser isolada, coberta e de fácil limpeza.</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Controle Químico — Empresa Especializada</div>
+  <div class="doc-alert da-atencao"><span>⚠️</span><span><strong>Importante:</strong> O controle químico de pragas deve ser realizado EXCLUSIVAMENTE por empresa especializada, devidamente licenciada pela ANVISA, com técnico responsável habilitado. A UAN não deve realizar aplicações químicas por conta própria.</span></div>
+  <table class="doc-table">
+    <thead><tr><th>Tipo de Praga</th><th>Frequência mínima</th><th>Método</th><th>Documentação exigida</th></tr></thead>
+    <tbody>
+      <tr><td>Insetos rastreiros (baratas, formigas)</td><td>Bimestral</td><td>Gel e pó inseticida</td><td>Laudo técnico + FISPQ</td></tr>
+      <tr><td>Insetos voadores (moscas, mosquitos)</td><td>Trimestral</td><td>Armadilhas luminosas + inseticida</td><td>Laudo técnico</td></tr>
+      <tr><td>Roedores (ratos, camundongos)</td><td>Bimestral</td><td>Raticidas em porta-iscas</td><td>Laudo + mapa das iscas</td></tr>
+      <tr><td>Vistoria geral (preventiva)</td><td>Mensal</td><td>Inspeção técnica</td><td>Relatório de vistoria</td></tr>
+    </tbody>
+  </table>
+  <p class="doc-text" style="margin-top:10px"><strong>Documentação obrigatória da empresa contratada:</strong> Alvará sanitário da empresa, registro dos produtos utilizados na ANVISA, Ficha de Informação de Segurança de Produto Químico (FISPQ), laudo de execução assinado por técnico responsável e comprovante de carência dos produtos aplicados.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Monitoramento e Registros</div>
+  <p class="doc-text">O Nutricionista RT ou Técnico em Nutrição deve realizar inspeção visual diária das instalações, registrando qualquer evidência de presença de pragas (fezes, trilhas, ninhos, corrosão em embalagens). Em caso de detecção, acionar imediatamente a empresa de controle de pragas.</p>
+  <table class="doc-table">
+    <thead><tr><th>Evidência identificada</th><th>Ação imediata</th><th>Prazo</th></tr></thead>
+    <tbody>
+      <tr><td>Fezes de roedor</td><td>Isolar área + acionar empresa</td><td>Imediato</td></tr>
+      <tr><td>Insetos na área de produção</td><td>Suspender produção + acionar empresa</td><td>Imediato</td></tr>
+      <tr><td>Embalagem corroída</td><td>Descartar produto + registrar NC</td><td>Imediato</td></tr>
+      <tr><td>Tela danificada</td><td>Substituir tela + comunicar RT</td><td>24 horas</td></tr>
+    </tbody>
+  </table>
+</div>`;
+}
+
+function gerarPOP03() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Garantir a qualidade da água utilizada na UAN por meio da higienização periódica do reservatório (caixa d'água/cisterna), em conformidade com a RDC 216/2004, Portaria MS 2.914/2011 e NBR 5626.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Periodicidade e Responsabilidades</div>
+  <table class="doc-table">
+    <thead><tr><th>Atividade</th><th>Periodicidade</th><th>Responsável</th></tr></thead>
+    <tbody>
+      <tr><td>Higienização do reservatório</td><td>Semestral (a cada 6 meses)</td><td>Empresa especializada ou RT</td></tr>
+      <tr><td>Análise microbiológica da água</td><td>Semestral</td><td>Laboratório credenciado</td></tr>
+      <tr><td>Verificação visual do cloro residual</td><td>Diária</td><td>Técnico em Nutrição</td></tr>
+      <tr><td>Registro de cloro residual</td><td>Diária (manhã e tarde)</td><td>Técnico em Nutrição</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Procedimento de Higienização do Reservatório</div>
+  <div class="doc-alert da-atencao"><span>⚠️</span><span>A higienização deve ser realizada por profissional habilitado, com EPI completo (macacão, luvas, máscara respiratória, óculos de proteção e botas de borracha). Nunca entrar no reservatório sem companheiro presente.</span></div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Comunicação prévia:</strong> Informar os usuários da UAN com antecedência mínima de 24 horas sobre a interrupção temporária do fornecimento de água. Garantir reserva de água potável para o período.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Esvaziamento:</strong> Fechar o registro de entrada de água e esvaziar o reservatório. Descartar a água residual de forma a não comprometer a produção.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Remoção de resíduos:</strong> Remover todo o material sedimentado, algas, biofilme e resíduos com rodo, esponja e esguicho de pressão. Descartar o material em saco plástico resistente.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Lavagem com detergente:</strong> Esfregar todas as paredes internas, fundo e tampa com detergente neutro e escova de cerdas duras. Enxaguar completamente removendo todo o detergente.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t"><strong>Sanitização com hipoclorito:</strong> Aplicar solução de hipoclorito de sódio a 2,5% nas paredes, fundo e tampa. Deixar em contato por 30 minutos. Concentração final de cloro residual: 0,5 a 3,0 mg/L.</div></div>
+    <div class="doc-step"><div class="step-n">6</div><div class="step-t"><strong>Enxágue e abastecimento:</strong> Enxaguar completamente o reservatório com água potável e fechar hermeticamente. Abrir o registro de entrada e aguardar o abastecimento. Verificar a vedação e ausência de vazamentos.</div></div>
+    <div class="doc-step"><div class="step-n">7</div><div class="step-t"><strong>Registro e lacre:</strong> Afixar etiqueta de controle na caixa d'água com data da higienização, próxima data prevista, responsável e cloro residual medido. Arquivar o laudo de análise de água.</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Parâmetros de Qualidade da Água</div>
+  <table class="doc-table">
+    <thead><tr><th>Parâmetro</th><th>Valor aceitável</th><th>Método de verificação</th><th>Frequência</th></tr></thead>
+    <tbody>
+      <tr><td>Cloro residual livre</td><td>0,2 a 5,0 mg/L</td><td>Kit colorimétrico ou medidor digital</td><td>Diária</td></tr>
+      <tr><td>pH</td><td>6,0 a 9,5</td><td>pHmetro ou fita indicadora</td><td>Semanal</td></tr>
+      <tr><td>Turbidez</td><td>≤ 4,0 uT</td><td>Visual ou turbidímetro</td><td>Semanal</td></tr>
+      <tr><td>Coliformes totais</td><td>Ausência em 100 mL</td><td>Análise laboratorial</td><td>Semestral</td></tr>
+      <tr><td>E. coli</td><td>Ausência em 100 mL</td><td>Análise laboratorial</td><td>Semestral</td></tr>
+    </tbody>
+  </table>
+</div>`;
+}
+
+function gerarPOP04() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Assegurar as condições adequadas de higiene pessoal e saúde dos manipuladores de alimentos, minimizando o risco de contaminação biológica, química e física dos alimentos produzidos na UAN.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Higienização das Mãos — 7 Passos Obrigatórios</div>
+  <div class="doc-alert da-info"><span>ℹ️</span><span>A higienização das mãos deve ser realizada SEMPRE que: chegar ao trabalho; usar o sanitário; manipular alimentos crus; tossir/espirrar; manusear lixo; tocar nos cabelos/rosto; trocar de atividade; e antes de calçar luvas.</span></div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t">Molhar as mãos com água corrente potável</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t">Aplicar quantidade suficiente de sabonete líquido antisséptico</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t">Esfregar palmas, dorso, dedos, espaços interdigitais e punhos por mínimo 20 segundos</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t">Escovar as unhas com escova própria e individual</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t">Enxaguar abundantemente com água corrente, removendo todo o sabonete</div></div>
+    <div class="doc-step"><div class="step-n">6</div><div class="step-t">Secar com papel toalha descartável não reciclado (nunca com pano de tecido)</div></div>
+    <div class="doc-step"><div class="step-n">7</div><div class="step-t">Aplicar solução alcoólica (álcool gel 70%) e esfregar as mãos até secar completamente</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Requisitos de Apresentação e Conduta</div>
+  <table class="doc-table">
+    <thead><tr><th>Item</th><th>Exigência</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Cabelo</td><td>Preso e coberto com touca descartável ou tecido</td><td>Touca deve cobrir todo o cabelo e orelhas</td></tr>
+      <tr><td>Uniforme</td><td>Limpo, conservado, de cor clara</td><td>Troca diária obrigatória</td></tr>
+      <tr><td>Avental</td><td>Obrigatório na área de produção</td><td>Não utilizar fora da área de produção</td></tr>
+      <tr><td>Calçado</td><td>Fechado, antiderrapante, de cor clara</td><td>Uso exclusivo na área de trabalho</td></tr>
+      <tr><td>Unhas</td><td>Curtas, limpas, sem esmalte ou base</td><td>Verificação diária antes do início</td></tr>
+      <tr><td>Adornos</td><td>Proibidos: brincos, anéis, pulseiras, relógio, piercing</td><td>Retirar antes de entrar na área de produção</td></tr>
+      <tr><td>Barba/bigode</td><td>Barbeado ou protegido com máscara</td><td>Máscara descartável obrigatória</td></tr>
+      <tr><td>Máscara</td><td>Obrigatória sobre boca e nariz</td><td>Trocar a cada 2 horas ou quando úmida</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Controle de Saúde dos Manipuladores</div>
+  <p class="doc-text">Todos os manipuladores devem realizar exames médicos admissionais e periódicos (anuais), incluindo: hemograma completo, coproparasitológico, cultura de fezes (pesquisa de Salmonella e Shigella), dermatológico e VDRL. Os atestados devem ser arquivados pelo Nutricionista RT.</p>
+  <div class="doc-alert da-critico"><span>🚨</span><span><strong>Afastamento obrigatório:</strong> Manipulador apresentando qualquer das condições abaixo deve ser IMEDIATAMENTE afastado da manipulação de alimentos: diarreia, vômito, febre, icterícia, resfriado/gripe com coriza, lesões cutâneas (feridas, furúnculos, abscessos), tosse persistente ou infecções respiratórias.</span></div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">5</span>Programa de Capacitação</div>
+  <p class="doc-text">Todos os manipuladores devem receber capacitação em higiene pessoal e segurança alimentar com frequência mínima anual, e sempre que houver: admissão de novo funcionário, mudança de procedimentos, ou identificação de não conformidades relacionadas à higiene pessoal. Os registros de capacitação (lista de presença, conteúdo programático e carga horária) devem ser arquivados pelo Nutricionista RT.</p>
+</div>`;
+}
+
+function gerarPOP05() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Estabelecer procedimentos para o correto manejo, acondicionamento, coleta e destinação final dos resíduos sólidos gerados na UAN, prevenindo a contaminação dos alimentos e do ambiente, em conformidade com a RDC 216/2004 e Lei Federal 12.305/2010 (Política Nacional de Resíduos Sólidos).</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Classificação e Segregação dos Resíduos</div>
+  <table class="doc-table">
+    <thead><tr><th>Tipo de Resíduo</th><th>Cor do saco/lixeira</th><th>Destino</th><th>Frequência de coleta</th></tr></thead>
+    <tbody>
+      <tr><td>Resíduos orgânicos (restos de alimentos)</td><td>Marrom</td><td>Compostagem ou aterro sanitário</td><td>2× ao dia (mínimo)</td></tr>
+      <tr><td>Recicláveis (papel, plástico, vidro, metal)</td><td>Azul / Verde / Amarelo / Vermelho</td><td>Coleta seletiva / cooperativa</td><td>Diária</td></tr>
+      <tr><td>Óleos e gorduras de fritura</td><td>Bombonas identificadas</td><td>Empresa credenciada de coleta de óleo</td><td>Conforme acúmulo</td></tr>
+      <tr><td>Embalagens de produtos químicos</td><td>Laranja (resíduo perigoso)</td><td>Descarte específico conforme FISPQ</td><td>Conforme acúmulo</td></tr>
+      <tr><td>Rejeitos (mistura não reciclável)</td><td>Preto ou cinza</td><td>Aterro sanitário municipal</td><td>Diária</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Procedimentos Operacionais</div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Lixeiras internas:</strong> Manter lixeiras com tampa e acionamento por pedal em todas as áreas de produção. Capacidade máxima de 50% antes de ser substituída. Saco plástico resistente obrigatório.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Transporte interno:</strong> Conduzir os resíduos em carros ou contêineres identificados e tampados. O trajeto de transporte de lixo NUNCA deve cruzar a área de preparo ou armazenamento de alimentos.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Armazenamento externo:</strong> Área de lixo externo deve ser: coberta, impermeabilizada, com ponto de água para higienização, isolada das áreas de produção, com acesso fácil para coleta, e distante de janelas e portas da área produtiva.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Higienização das lixeiras:</strong> As lixeiras internas devem ser higienizadas diariamente com detergente e sanitizante. As externas, semanalmente ou quando necessário.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t"><strong>Óleos e gorduras:</strong> Armazenar em bombonas identificadas com data de início do acúmulo. Acionar empresa coletora quando atingir 75% da capacidade. Manter comprovante de destinação adequada.</div></div>
+  </div>
+</div>`;
+}
+
+function gerarPOP06() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Garantir o correto funcionamento, segurança operacional e precisão dos equipamentos da UAN por meio de programa de manutenção preventiva e calibração periódica, conforme RDC 216/2004.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Programa de Manutenção Preventiva</div>
+  <table class="doc-table">
+    <thead><tr><th>Equipamento</th><th>Frequência</th><th>Atividades</th><th>Responsável</th></tr></thead>
+    <tbody>
+      <tr><td>Câmaras frias e refrigeradores</td><td>Semestral</td><td>Revisão do motor, gaxetas, termostato, sistema de refrigeração</td><td>Técnico especializado</td></tr>
+      <tr><td>Balcão térmico</td><td>Trimestral</td><td>Revisão das resistências, termostato e estrutura</td><td>Técnico especializado</td></tr>
+      <tr><td>Forno combinado</td><td>Semestral</td><td>Revisão das resistências, sensores e sistema de vapor</td><td>Técnico especializado</td></tr>
+      <tr><td>Liquidificador e processador</td><td>Semestral</td><td>Verificação do motor, lâminas e travamento</td><td>Técnico ou RT</td></tr>
+      <tr><td>Exaustores e coifas</td><td>Trimestral</td><td>Limpeza de filtros e revisão do motor</td><td>Técnico especializado</td></tr>
+      <tr><td>Instalações hidráulicas</td><td>Anual</td><td>Inspeção de vazamentos, pressão e válvulas</td><td>Encanador credenciado</td></tr>
+      <tr><td>Instalações elétricas</td><td>Anual</td><td>Verificação de aterramento, disjuntores e fiação</td><td>Eletricista credenciado</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Calibração de Instrumentos de Medição</div>
+  <table class="doc-table">
+    <thead><tr><th>Instrumento</th><th>Frequência de calibração</th><th>Padrão de referência</th><th>Responsável</th></tr></thead>
+    <tbody>
+      <tr><td>Termômetros de sonda (digital)</td><td>Semestral</td><td>Gelo fundente (0°C) e água fervente (100°C)</td><td>Nutricionista RT</td></tr>
+      <tr><td>Termômetros de câmara fria</td><td>Anual</td><td>Calibração por laboratório credenciado pelo INMETRO</td><td>Laboratório credenciado</td></tr>
+      <tr><td>Balanças e balanças de porção</td><td>Semestral</td><td>Pesos padrão calibrados (classes OIML)</td><td>Técnico em Nutrição</td></tr>
+      <tr><td>Medidor de cloro residual</td><td>Semestral</td><td>Solução padrão de referência</td><td>Nutricionista RT</td></tr>
+    </tbody>
+  </table>
+  <div class="doc-alert da-info"><span>ℹ️</span><span><strong>Registro obrigatório:</strong> Todos os procedimentos de manutenção e calibração devem ser documentados com: data, equipamento, problema identificado (se houver), serviço realizado, técnico responsável e próxima manutenção prevista.</span></div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Procedimento em Caso de Falha de Equipamento</div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t">Identificar e isolar o equipamento com falha. Afixar etiqueta "FORA DE USO".</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t">Comunicar imediatamente ao Nutricionista RT e ao responsável pela manutenção.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t">Se câmara fria: transferir alimentos para outro equipamento em funcionamento e registrar como não conformidade.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t">Acionar o serviço de manutenção e registrar o chamado com protocolo de atendimento.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t">Somente retornar o equipamento ao uso após verificação e liberação pelo técnico responsável.</div></div>
+  </div>
+</div>`;
+}
+
+function gerarPOP07() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Garantir que as matérias-primas, ingredientes e embalagens recebidos atendam aos requisitos de qualidade e segurança alimentar estabelecidos, prevenindo a entrada de produtos contaminados ou impróprios para consumo na UAN.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Critérios para Seleção de Fornecedores</div>
+  <table class="doc-table">
+    <thead><tr><th>Documento exigido</th><th>Tipo de fornecedor</th><th>Validade mínima</th></tr></thead>
+    <tbody>
+      <tr><td>Alvará Sanitário (Vigilância Sanitária)</td><td>Todos</td><td>Vigente</td></tr>
+      <tr><td>Cadastro de Estabelecimento no CNPJ</td><td>Todos</td><td>Regular</td></tr>
+      <tr><td>SIF/SIE/SIM (carnes e derivados)</td><td>Frigoríficos e distribuidores de carnes</td><td>Vigente</td></tr>
+      <tr><td>Certificado de qualidade do produto</td><td>Indústrias de alimentos</td><td>Vigente</td></tr>
+      <tr><td>Laudo microbiológico</td><td>Hortifrutigranjeiros (recomendado)</td><td>Menos de 6 meses</td></tr>
+      <tr><td>Programa de Autocontrole (PAC)</td><td>Laticínios e derivados</td><td>Vigente</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Procedimento de Recebimento de Mercadorias</div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Verificação documental:</strong> Conferir nota fiscal (dados do fornecedor, produto, quantidade, validade, lote). Verificar se o fornecedor está na lista de aprovados. Exigir certificados e laudos quando aplicável.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Verificação do veículo:</strong> Inspecionar as condições do veículo de transporte: higiene interna, funcionamento do sistema de refrigeração (temperatura e certificado de calibração do termômetro), identificação do responsável e produto.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Temperatura no recebimento:</strong> Medir a temperatura dos produtos refrigerados e congelados com termômetro calibrado, inserindo a sonda no centro do produto. Registrar os valores.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Avaliação sensorial:</strong> Verificar cor, odor, textura e aparência dos produtos. Inspecionar embalagens quanto à integridade, ausência de amassados, ferrugem, estufamento ou violação de lacres.</div></div>
+    <div class="doc-step"><div class="step-n">5</div><div class="step-t"><strong>Validade:</strong> Verificar o prazo de validade de TODOS os produtos. Produtos vencidos ou próximos ao vencimento (critério: menos de 1/3 do prazo restante) devem ser recusados ou avaliados individualmente.</div></div>
+    <div class="doc-step"><div class="step-n">6</div><div class="step-t"><strong>Armazenamento imediato:</strong> Organizar por PVPS (Primeiro que Vence, Primeiro que Sai) ou PEPS (Primeiro que Entra, Primeiro que Sai). Etiquetar com data de recebimento. Armazenar nas temperaturas corretas em até 30 minutos.</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Temperaturas de Recebimento</div>
+  <table class="doc-table">
+    <thead><tr><th>Grupo de alimento</th><th>Temperatura máxima no recebimento</th><th>Ação se fora do limite</th></tr></thead>
+    <tbody>
+      <tr><td>Carnes bovina, suína e aves</td><td>≤ 7°C</td><td>Recusar e registrar NC</td></tr>
+      <tr><td>Pescados e frutos do mar</td><td>≤ 2°C (ou em gelo)</td><td>Recusar e registrar NC</td></tr>
+      <tr><td>Laticínios e derivados</td><td>≤ 10°C</td><td>Recusar e registrar NC</td></tr>
+      <tr><td>Ovos</td><td>≤ 10°C</td><td>Avaliar com RT antes de recusar</td></tr>
+      <tr><td>Congelados</td><td>≤ -12°C (ideal ≤ -18°C)</td><td>Recusar se > -12°C</td></tr>
+      <tr><td>Hortifrutigranjeiros</td><td>Avaliação sensorial (temperatura ambiente)</td><td>Recusar se com sinais de deterioração</td></tr>
+      <tr><td>Produtos de panificação</td><td>Temperatura ambiente (≤ 25°C)</td><td>Recusar se com sinais de mofo</td></tr>
+    </tbody>
+  </table>
+</div>`;
+}
+
+function gerarPOP08() {
+  return `
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">1</span>Objetivo</div>
+  <p class="doc-text">Assegurar que os alimentos preparados atendam aos padrões de qualidade e segurança alimentar durante todas as etapas de produção — desde o pré-preparo até a distribuição — controlando temperatura, tempo e condições higiênico-sanitárias.</p>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">2</span>Controle de Tempo e Temperatura — Produção</div>
+  <table class="doc-table">
+    <thead><tr><th>Etapa</th><th>Temperatura / Condição</th><th>Tempo máximo</th><th>Ação se fora do limite</th></tr></thead>
+    <tbody>
+      <tr><td>Descongelamento (geladeira)</td><td>≤ 5°C</td><td>Conforme produto (24–72h)</td><td>Descartar se odor alterado</td></tr>
+      <tr><td>Descongelamento (micro-ondas)</td><td>Imediatamente usado na cocção</td><td>—</td><td>Usar imediatamente após</td></tr>
+      <tr><td>Pré-preparo (temperatura ambiente)</td><td>≤ 25°C</td><td>30 minutos máximo</td><td>Retornar à refrigeração</td></tr>
+      <tr><td>Cocção (temperatura interna)</td><td>≥ 74°C no centro</td><td>Verificar com sonda</td><td>Continuar cocção até atingir</td></tr>
+      <tr><td>Manutenção quente (balcão)</td><td>≥ 60°C</td><td>Máximo 6 horas</td><td>Descartar se < 60°C por > 1h</td></tr>
+      <tr><td>Manutenção fria (buffet frio)</td><td>≤ 10°C</td><td>Máximo 4 horas</td><td>Descartar se > 10°C por > 30min</td></tr>
+      <tr><td>Resfriamento rápido</td><td>60°C → 10°C</td><td>Máximo 2 horas</td><td>Descartar se não atingido</td></tr>
+      <tr><td>Armazenamento (preparados frios)</td><td>≤ 4°C</td><td>Conforme preparo (máx. 5 dias)</td><td>Descartar se vencido</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">3</span>Higienização de Hortifrutigranjeiros</div>
+  <div class="doc-step-list">
+    <div class="doc-step"><div class="step-n">1</div><div class="step-t"><strong>Seleção:</strong> Remover folhas, partes amassadas, deterioradas ou com sinais de podridão. Descartar adequadamente. Pesar o produto limpo para cálculo do fator de correção.</div></div>
+    <div class="doc-step"><div class="step-n">2</div><div class="step-t"><strong>Lavagem:</strong> Lavar folha a folha (vegetais folhosos) ou unidade por unidade sob água corrente potável, retirando toda a sujidade visível. Não utilizar esponjas ou escovas que possam danificar o vegetal.</div></div>
+    <div class="doc-step"><div class="step-n">3</div><div class="step-t"><strong>Sanitização:</strong> Imergir em solução de hipoclorito de sódio a 100–200 ppm (cloro ativo) por 15 minutos. Para frutas com casca: mesma solução por 15 min. Para folhosos: sempre sanitizar antes de cortar.</div></div>
+    <div class="doc-step"><div class="step-n">4</div><div class="step-t"><strong>Enxágue:</strong> Enxaguar completamente em água corrente potável para remover o sanitizante. Secar com papel toalha descartável ou centrífuga de salada higienizada.</div></div>
+  </div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">4</span>Identificação e Rastreabilidade dos Preparados</div>
+  <p class="doc-text">Todos os alimentos preparados e armazenados devem ser identificados com etiqueta contendo: nome do produto, data e hora do preparo, data de validade (conforme critérios acima), responsável pela preparação e temperatura de armazenamento.</p>
+  <div class="doc-alert da-critico"><span>🚨</span><span><strong>Descarte obrigatório:</strong> Alimentos que atingiram o tempo máximo de distribuição, alimentos com características sensoriais alteradas (cor, odor, textura, sabor), alimentos com temperatura fora do limite por período superior ao permitido, ou alimentos cuja rastreabilidade não pode ser garantida.</span></div>
+</div>
+<div class="doc-sec">
+  <div class="doc-sec-title"><span class="doc-sec-num">5</span>Avaliação Sensorial das Preparações</div>
+  <p class="doc-text">O Nutricionista RT ou responsável técnico deve realizar avaliação sensorial de pelo menos uma preparação de cada refeição antes da distribuição, verificando: cor, odor, sabor, textura e temperatura. Os resultados devem ser registrados no formulário de controle diário de qualidade sensorial.</p>
+</div>`;
+}
+
+// ══════════════════════════════════════
+// RENDERIZAÇÃO DOS CARDS DOS POPs
+// ══════════════════════════════════════
+function renderPOPs() {
+  const grid = document.getElementById('pops-grid');
+  grid.innerHTML = POPS.map(p => `
+    <div class="pop-card ${p.id===1?'selected':''}" id="pop-card-${p.id}" onclick="abrirPOP(${p.id})">
+      <div class="pc-top">
+        <div class="pc-num">${p.num} · Obrigatório RDC 216</div>
+        <span class="pc-ico">${p.icon}</span>
+        <div class="pc-title">${p.titulo}</div>
+        <div class="pc-status ${p.status==='ok'?'st-ok':p.status==='warn'?'st-warn':p.status==='venc'?'st-venc':'st-novo'}"></div>
+      </div>
+      <div class="pc-bot">
+        <div class="pc-meta">
+          <strong>Revisão:</strong> ${p.revisao}<br>
+          <strong>Próxima:</strong> ${p.proxima}<br>
+          <strong>RT:</strong> ${p.resp}
+        </div>
+        <div class="pc-btns">
+          <button class="btn btn-outline btn-xs" onclick="event.stopPropagation();abrirEditor(${p.id})">✏️ Editar</button>
+          <button class="btn btn-primary btn-xs" onclick="event.stopPropagation();imprimirPOP(${p.id})">🖨️ PDF</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function abrirPOP(id) {
+  document.querySelectorAll('.pop-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pop-card-'+id).classList.add('selected');
+  abrirEditor(id);
+}
+
+function abrirEditor(id) {
+  const pop = POPS.find(p=>p.id===id);
+  if (!pop) return;
+  document.getElementById('ed-num').value    = pop.num;
+  document.getElementById('ed-titulo').value  = pop.titulo;
+  document.getElementById('ed-base').value    = pop.base;
+  document.getElementById('ed-resp').value    = pop.resp;
+  document.getElementById('ed-versao').value  = pop.versao;
+  document.getElementById('ed-estab').value   = document.querySelector('.sb-uan .v').textContent;
+  document.getElementById('ed-obj').value     = pop.objetivo;
+  document.getElementById('doc-toolbar-title').textContent = `Editando: ${pop.num}`;
+  renderDocumento(pop);
+  showTab('editor', document.getElementById('tab-editor'));
+}
+
+function renderDocumento(pop) {
+  const now = new Date();
+  const dataFmt = doc_value('ed-data') || now.toLocaleDateString('pt-BR');
+  document.getElementById('doc-content').innerHTML = `
+    <!-- CABEÇALHO -->
+    <div class="doc-header">
+      <div class="doc-logo-box">
+        <div class="doc-logo-sq">🥗</div>
+        <div class="doc-brand">
+          <strong>NutriConsult Pro</strong>
+          <span>Consultoria em Nutrição · UANs</span>
+        </div>
+      </div>
+      <div class="doc-meta-box">
+        <strong>Documento:</strong> ${pop.num}<br>
+        <strong>Versão:</strong> ${pop.versao}<br>
+        <strong>Emissão:</strong> ${dataFmt}<br>
+        <strong>Próxima revisão:</strong> ${pop.proxima}<br>
+        <strong>Base legal:</strong> ${pop.base}
+      </div>
+    </div>
+
+    <!-- TÍTULO -->
+    <div class="doc-title-block">
+      <div class="doc-pretitle">Procedimento Operacional Padronizado</div>
+      <div class="doc-main-title">${pop.num} — ${pop.titulo}</div>
+      <div class="doc-meta-row">
+        <span class="doc-meta-item">🏢 <strong>UAN:</strong> ${doc_value('ed-estab')}</span>
+        <span class="doc-meta-item">👤 <strong>RT:</strong> ${pop.resp}</span>
+        <span class="doc-meta-item">🔄 <strong>Revisão:</strong> ${doc_value('ed-revisao')}</span>
+        <span class="doc-meta-item">📅 <strong>Frequência:</strong> ${doc_value('ed-freq')}</span>
+      </div>
+    </div>
+
+    <!-- OBJETIVO DESTAQUE -->
+    <div class="doc-alert da-info" style="margin-bottom:20px">
+      <span>🎯</span>
+      <span><strong>Objetivo:</strong> ${pop.objetivo}</span>
+    </div>
+
+    <!-- CONTEÚDO DO POP -->
+    ${pop.conteudo}
+
+    <!-- ASSINATURA -->
+    <div class="doc-sign">
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <div class="sign-lbl">ELABORADO POR<br>${pop.resp}<br>Nutricionista RT</div>
+      </div>
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <div class="sign-lbl">APROVADO POR<br>Consultor Principal<br>NutriConsult Pro</div>
+      </div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="doc-footer-bar">
+      <span>${pop.num} · ${pop.versao} · ${doc_value('ed-estab')}</span>
+      <span>NutriConsult Pro · Gerado em ${now.toLocaleDateString('pt-BR')}</span>
+      <span>${pop.base} · Página 1/1</span>
+    </div>
+  `;
+}
+
+function doc_value(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+function updateDocTitle() {
+  // atualizado ao salvar
+}
+
+// ══════════════════════════════════════
+// MBP — SEÇÕES
+// ══════════════════════════════════════
+const MBP_SECOES = [
+  { num:1, icon:'🏢', titulo:'Identificação do Estabelecimento', status:'ok', desc:'Razão social, CNPJ, endereço, RT e capacidade' },
+  { num:2, icon:'🏗️', titulo:'Edificação e Instalações', status:'ok', desc:'Layout, fluxo, ventilação, iluminação' },
+  { num:3, icon:'🔧', titulo:'Equipamentos e Móveis', status:'ok', desc:'Lista, estado de conservação e manutenção' },
+  { num:4, icon:'🧑‍⚕️', titulo:'Manipuladores', status:'ok', desc:'Capacitação, saúde e controle de higiene' },
+  { num:5, icon:'🚚', titulo:'Matérias-Primas e Ingredientes', status:'ok', desc:'Fornecedores, recebimento e armazenamento' },
+  { num:6, icon:'🍳', titulo:'Preparação dos Alimentos', status:'andamento', desc:'Descongelamento, cocção e resfriamento' },
+  { num:7, icon:'❄️', titulo:'Armazenamento e Conservação', status:'pendente', desc:'Temperaturas, PVPS/PEPS e validade' },
+  { num:8, icon:'🚛', titulo:'Transporte e Distribuição', status:'pendente', desc:'Temperaturas de distribuição e exposição' },
+  { num:9, icon:'💧', titulo:'Controle da Água', status:'pendente', desc:'Qualidade, reservatório e cloro residual' },
+  { num:10,icon:'🗑️', titulo:'Manejo de Resíduos', status:'pendente', desc:'Segregação, coleta e destinação final' },
+];
+
+function renderMBP() {
+  const c = document.getElementById('mbp-secoes');
+  c.innerHTML = MBP_SECOES.map(s => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:${s.status==='ok'?'var(--verde-p)':s.status==='andamento'?'var(--ouro-p)':'var(--cinza-8)'};border:1px solid ${s.status==='ok'?'var(--verde-xl)':s.status==='andamento'?'var(--ouro-p)':'var(--cinza-6)'};cursor:pointer;transition:all .15s" onclick="editarSecaoMBP(${s.num})">
+      <span style="font-size:20px">${s.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:700;color:var(--cinza-1)">${s.num}. ${s.titulo}</div>
+        <div style="font-size:11px;color:var(--cinza-4);margin-top:1px">${s.desc}</div>
+      </div>
+      <span class="pill ${s.status==='ok'?'pill-g':s.status==='andamento'?'pill-a':'pill-n'}">${s.status==='ok'?'✓ Concluída':s.status==='andamento'?'⏳ Em andamento':'📋 Pendente'}</span>
+      <button class="btn btn-ghost btn-xs">✏️</button>
+    </div>
+  `).join('');
+}
+
+function editarSecaoMBP(num) {
+  showToast(`✏️ Abrindo editor da Seção ${num} do MBP...`);
+}
+
+// ══════════════════════════════════════
+// PLACAS
+// ══════════════════════════════════════
+const PLACAS = [
+  { icon:'🙌', titulo:'LAVE SUAS MÃOS', subtitulo:'7 passos obrigatórios antes de manipular alimentos', cor:'linear-gradient(135deg,#0D2B18,#2E8A55)', local:'Pias e lavatórios' },
+  { icon:'🥼', titulo:'USE SEU EPI COMPLETO', subtitulo:'Touca · Avental · Luvas · Máscara · Botas', cor:'linear-gradient(135deg,#1A3F6F,#2E6FA8)', local:'Entrada da produção' },
+  { icon:'🌡️', titulo:'TEMPERATURAS SEGURAS', subtitulo:'Quente ≥ 60°C · Frio ≤ 10°C · Cocção ≥ 74°C', cor:'linear-gradient(135deg,#7A5A06,#C8973A)', local:'Área de produção' },
+  { icon:'🚫', titulo:'PROIBIDO NESTA ÁREA', subtitulo:'Sem adornos · Sem comer · Sem celular · Sem fumar', cor:'linear-gradient(135deg,#5A1010,#A03030)', local:'Entrada da produção' },
+  { icon:'🔄', titulo:'FLUXO DE PRODUÇÃO', subtitulo:'Receb. → Pré-preparo → Cocção → Distribuição', cor:'linear-gradient(135deg,#2D1B4E,#6B4BB0)', local:'Área de produção' },
+  { icon:'🗑️', titulo:'DESCARTE DE RESÍDUOS', subtitulo:'Orgânico · Reciclável · Óleo · Perigoso', cor:'linear-gradient(135deg,#1A3A2A,#2A6A4A)', local:'Área de descarte' },
+];
+
+function renderPlacas() {
+  const g = document.getElementById('placas-grid');
+  g.innerHTML = PLACAS.map((p,i) => `
+    <div style="background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;transition:all .2s;cursor:pointer" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--sh-lg)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--sh)'">
+      <div style="height:130px;background:${p.cor};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px">
+        <span style="font-size:34px">${p.icon}</span>
+        <div style="font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.8px;text-align:center;padding:0 10px;line-height:1.3">${p.titulo}</div>
+      </div>
+      <div style="padding:12px 14px">
+        <div style="font-size:12px;font-weight:700;color:var(--cinza-1);margin-bottom:4px">${p.titulo}</div>
+        <div style="font-size:11px;color:var(--cinza-4);margin-bottom:4px">${p.subtitulo}</div>
+        <div style="font-size:10px;color:var(--cinza-5)">📍 Local: ${p.local}</div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="editarPlaca(${i})">✏️ Editar</button>
+          <button class="btn btn-primary btn-xs" style="flex:1;justify-content:center" onclick="imprimirPlaca(${i})">🖨️ Imprimir</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editarPlaca(i) { showToast(`✏️ Editando placa: ${PLACAS[i].titulo}`); }
+
+function imprimirPlaca(i) {
+  const p = PLACAS[i];
+  const w = window.open('','_blank','width=600,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Placa — ${p.titulo}</title>
+  <style>
+    body{margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;}
+    @page{size:A4;margin:20mm}
+    @media print{body{margin:0}}
+    .placa{width:100%;min-height:200px;background:${p.cor};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;border-radius:12px;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+    .placa-icon{font-size:72px;text-align:center}
+    .placa-title{font-size:36px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:2px;text-align:center}
+    .placa-sub{font-size:18px;color:rgba(255,255,255,.7);text-align:center}
+    .placa-local{font-size:14px;color:rgba(255,255,255,.5);margin-top:10px;text-align:center}
+    .footer{text-align:center;margin-top:20px;font-size:12px;color:#aaa}
+  </style></head><body>
+  <div class="placa">
+    <div class="placa-icon">${p.icon}</div>
+    <div class="placa-title">${p.titulo}</div>
+    <div class="placa-sub">${p.subtitulo}</div>
+    <div class="placa-local">📍 ${p.local}</div>
+  </div>
+  <div class="footer">NutriConsult Pro · RDC 216/2004 · Afixar em local visível</div>
+  <script>window.onload=()=>{window.print();}<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+// ══════════════════════════════════════
+// IMPRESSÃO E EXPORTAÇÃO
+// ══════════════════════════════════════
+function imprimirDoc() {
+  window.print();
+}
+
+function imprimirPOP(id) {
+  const pop = POPS.find(p=>p.id===id);
+  abrirEditor(id);
+  setTimeout(()=>window.print(), 800);
+}
+
+function salvarPOP() {
+  showToast('✅ POP salvo com sucesso!');
+}
+
+function exportarHTML() {
+  const content = document.getElementById('doc-content');
+  if (!content) { showToast('⚠️ Abra um POP no editor primeiro.'); return; }
+  const titulo = document.getElementById('ed-num').value || 'POP';
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>${titulo}</title>
+  <style>
+    body{font-family:'Segoe UI',Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#1A1A16;}
+    .doc-header{display:flex;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #1A1A16;margin-bottom:18px;}
+    .doc-sec{margin-bottom:20px;}
+    .doc-sec-title{font-size:11px;font-weight:700;color:#1A5C38;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;padding-bottom:5px;border-bottom:1.5px solid #E8F7EE;display:flex;align-items:center;gap:7px;}
+    .doc-sec-num{width:18px;height:18px;background:#1A5C38;color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .doc-text{font-size:13px;color:#2E2E28;line-height:1.75;margin-bottom:10px;}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
+    th{background:#1A1A16;color:#fff;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;}
+    td{padding:8px 10px;border-bottom:1px solid #E8E8E0;}
+    tr:nth-child(even) td{background:#F4F4F0;}
+    .doc-step-list{display:flex;flex-direction:column;gap:8px;}
+    .doc-step{display:flex;gap:10px;padding:10px 12px;border-radius:8px;background:#F4F4F0;}
+    .step-n{width:22px;height:22px;border-radius:50%;background:#52B87A;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .step-t{font-size:12px;color:#2E2E28;line-height:1.55;}
+    .doc-alert{padding:11px 14px;border-radius:8px;margin-bottom:10px;display:flex;gap:8px;font-size:12px;}
+    .da-atencao{background:#FDF0C8;border-left:3px solid #D4A820;color:#8A6A20;}
+    .da-critico{background:#F5E8E8;border-left:3px solid #D04040;color:#8B1F1F;}
+    .da-info{background:#E8F7EE;border-left:3px solid #52B87A;color:#1A5C38;}
+    .doc-sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;padding-top:20px;border-top:1px solid #E8E8E0;}
+    .sign-block{text-align:center;}
+    .sign-line{border-bottom:1px solid #1A1A16;height:30px;margin-bottom:5px;}
+    .doc-footer-bar{background:#1A1A16;border-radius:7px;padding:9px 14px;display:flex;justify-content:space-between;margin-top:18px;}
+    .doc-footer-bar span{font-size:9px;color:rgba(255,255,255,0.4);}
+    .doc-title-block{margin-bottom:18px;}
+    .doc-pretitle{font-size:10px;font-weight:700;color:#8C8C80;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
+    .doc-main-title{font-size:20px;font-weight:700;color:#1A1A16;margin-bottom:5px;}
+    .doc-meta-row{display:flex;gap:14px;flex-wrap:wrap;}
+    .doc-meta-item{font-size:11px;color:#8C8C80;}
+  </style></head><body>
+  ${content.innerHTML}
+  </body></html>`;
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${titulo.replace(' ','_')}_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.html`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('📄 Arquivo HTML exportado! Abra no navegador e use Ctrl+P para salvar como PDF.');
+}
+
+function imprimirMBP() { window.print(); }
+
+function gerarMBP() {
+  showToast('📋 Gerando MBP completo... Abrindo para impressão.');
+  setTimeout(()=>window.print(),600);
+}
+
+function gerarPacote() {
+  showToast('📦 Pacote completo: exporte cada POP individualmente como HTML e use Ctrl+P para PDF.');
+}
+
+// ══════════════════════════════════════
+// TABS E MODAIS
+// ══════════════════════════════════════
+function showTab(id, btn) {
+  ['pops','editor','mbp','placas'].forEach(t=>{
+    document.getElementById('panel-'+t)?.classList.toggle('on',t===id);
+    document.getElementById('tab-'+t)?.classList.toggle('on',t===id);
+  });
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+document.querySelectorAll('.sb-item').forEach(n=>n.addEventListener('click',()=>{
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  n.classList.add('on');
+}));
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderPOPs();
+renderMBP();
+renderPlacas();
+// Abre POP 01 no editor por padrão
+setTimeout(()=>{ renderDocumento(POPS[0]); }, 100);
+</script>
+</body>
+</html>
