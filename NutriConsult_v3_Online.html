@@ -1033,14 +1033,17 @@ a { text-decoration: none; color: inherit; }
     </nav>
 
     <div class="sb-foot">
-      <div class="sb-user">
+      <div class="sb-user" style="margin-bottom:10px">
         <div class="sb-av" id="sb-av-initials">RT</div>
-        <div>
+        <div style="flex:1">
           <div class="sb-user-name" id="sb-user-name">Nutricionista RT</div>
           <div class="sb-user-role" id="sb-user-role">Responsável Técnico</div>
         </div>
-        <button class="sb-settings" onclick="navigate(document.querySelector('[data-page=configuracoes]'))">⚙</button>
+        <button class="sb-settings" onclick="navigate(document.querySelector('[data-page=configuracoes]'))" title="Configurações">⚙</button>
       </div>
+      <button onclick="fazerLogout()" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;transition:all .15s" onmouseover="this.style.background='rgba(192,57,43,.3)';this.style.color='#fff';this.style.borderColor='rgba(192,57,43,.4)'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.6)';this.style.borderColor='rgba(255,255,255,.12)'">
+        <span>⎋</span> Sair do sistema
+      </button>
     </div>
   </aside>
 
@@ -1573,12 +1576,23 @@ async function carregarUANs() {
     if (!error && data) uans = data;
   }
 
-  // Se não tem UANs, cria uma padrão
+  const list = document.getElementById('uan-list');
+
+  // Sem UANs reais — leva para cadastrar a primeira
   if (uans.length === 0) {
-    uans = [{ id: 'demo-1', nome: 'Rest. Corporativo Alfa', cidade: 'São Paulo', estado: 'SP', ativo: true }];
+    list.innerHTML = `
+      <div style="padding:20px;text-align:center;background:var(--v50);border-radius:12px;border:1.5px dashed var(--v300)">
+        <div style="font-size:32px;margin-bottom:12px">🏗️</div>
+        <div style="font-size:14px;font-weight:700;color:var(--v700);margin-bottom:6px">Nenhuma UAN cadastrada ainda</div>
+        <div style="font-size:12px;color:var(--v500);margin-bottom:16px">Cadastre sua primeira unidade para começar a usar o sistema.</div>
+        <button class="btn btn-primary" onclick="window.location.href='cadastrar_uan.html'" style="width:100%;justify-content:center">
+          🏗️ Cadastrar minha primeira UAN
+        </button>
+      </div>`;
+    showAuthStep('step-uan');
+    return;
   }
 
-  const list = document.getElementById('uan-list');
   list.innerHTML = uans.map((u, i) => `
     <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;
       border:1.5px solid ${i===0?'var(--v400)':'var(--border)'};
@@ -1644,8 +1658,13 @@ function fazerLogout() {
   document.getElementById('screen-app').classList.remove('active');
   document.getElementById('screen-auth').style.display = 'grid';
   perfilSelecionado = null; usuarioLogado = null; uanAtiva = null;
-  showAuthStep('step-perfil');
-  showToast('👋 Até logo!');
+  // Limpa campos de login
+  const emailEl = document.getElementById('input-email');
+  const senhaEl = document.getElementById('input-senha');
+  if (emailEl) emailEl.value = '';
+  if (senhaEl) senhaEl.value = '';
+  showAuthStep('step-entrada');
+  showToast('👋 Sessão encerrada. Até logo!');
 }
 
 // ══════════════════════════════════════
@@ -1710,17 +1729,47 @@ function acaoPrincipal() {
 // ══════════════════════════════════════
 // MODAL UAN (sidebar)
 // ══════════════════════════════════════
-function renderModalUAN() {
-  document.getElementById('modal-uan-list').innerHTML = `
-    <div style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--v400);background:var(--v50);display:flex;align-items:center;gap:10px;cursor:pointer" onclick="trocarUAN('Rest. Corporativo Alfa')">
-      <div style="width:9px;height:9px;border-radius:50%;background:var(--v400)"></div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--n900)">Rest. Corporativo Alfa</div><div style="font-size:11px;color:var(--n400)">São Paulo, SP · Ativa</div></div>
-      <span style="color:var(--v500);font-size:14px">✓</span>
-    </div>
-    <div style="padding:13px 16px;border-radius:10px;border:1px solid var(--border);background:var(--n0);display:flex;align-items:center;gap:10px;cursor:pointer;opacity:.7" onclick="trocarUAN('UAN Hospital Beta')">
-      <div style="width:9px;height:9px;border-radius:50%;background:#E67E22"></div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--n900)">UAN Hospital Beta</div><div style="font-size:11px;color:var(--n400)">São Paulo, SP · Em implantação</div></div>
-    </div>`;
+async function renderModalUAN() {
+  const el = document.getElementById('modal-uan-list');
+  el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--n400);font-size:12px">Carregando...</div>';
+
+  let uans = [];
+  if (supabase_client && usuarioLogado?.id) {
+    const { data } = await supabase_client
+      .from('uans').select('id,nome,cidade,estado,ativo')
+      .eq('consultor_id', usuarioLogado.id)
+      .order('created_at', { ascending: true });
+    if (data) uans = data;
+  }
+
+  if (uans.length === 0) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:16px;background:var(--v50);border-radius:10px;border:1px dashed var(--v300)">
+        <div style="font-size:13px;font-weight:600;color:var(--v700);margin-bottom:8px">Nenhuma UAN cadastrada</div>
+        <button class="btn btn-primary btn-sm" onclick="closeModal('modal-uan');window.location.href='cadastrar_uan.html'">+ Cadastrar agora</button>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = uans.map((u, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:10px;
+      border:${uanAtiva?.id===u.id?'1.5px solid var(--v400)':'1px solid var(--border)'};
+      background:${uanAtiva?.id===u.id?'var(--v50)':'var(--n0)'};cursor:pointer;transition:all .15s"
+      onclick="trocarUAN('${u.id}','${u.nome}',this)">
+      <div style="width:9px;height:9px;border-radius:50%;background:${u.ativo?'var(--v400)':'#E67E22'};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--n900)">${u.nome}</div>
+        <div style="font-size:11px;color:var(--n400)">${u.cidade||''}${u.estado?', '+u.estado:''} · ${u.ativo?'Ativa':'Implantação'}</div>
+      </div>
+      ${uanAtiva?.id===u.id?'<span style="color:var(--v500);font-size:14px">✓</span>':''}
+    </div>`).join('');
+}
+
+function trocarUAN(id, nome, el) {
+  uanAtiva = { id, nome };
+  document.getElementById('sb-uan-name').innerHTML = nome + ' <span class="sb-uan-arrow">▾</span>';
+  closeModal('modal-uan');
+  showToast('🏢 Unidade alterada: ' + nome);
 }
 
 function trocarUAN(nome) {
@@ -1870,8 +1919,26 @@ function showToast(msg) {
 // ══════════════════════════════════════
 renderPerfis();
 mostrarPermissoes('tecnico');
-// Garante que começa na tela de entrada
 showAuthStep('step-entrada');
+
+// Verifica se já tem sessão ativa no Supabase (login persistente)
+(async () => {
+  if (!supabase_client) return;
+  const { data } = await supabase_client.auth.getSession();
+  if (data?.session?.user) {
+    usuarioLogado = data.session.user;
+    // Busca perfil
+    const { data: profile } = await supabase_client
+      .from('profiles').select('*').eq('id', usuarioLogado.id).single();
+    if (profile) {
+      usuarioLogado.nome  = profile.nome;
+      usuarioLogado.cargo = profile.cargo;
+      perfilSelecionado   = profile.cargo || 'consultor';
+    }
+    // Vai direto para seleção de UAN
+    await carregarUANs();
+  }
+})();
 document.getElementById('tb-action-2').style.display = 'flex';
 </script>
 </body>
